@@ -1,0 +1,16 @@
+{
+  "name": "ecocampus-3d",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --open",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@nats-io/nats-core": "^3.5.0",
+    "three": "^0.187.0",
+    "vite": "^8.3.8"
+  }
+}
