@@ -75,18 +75,18 @@ function salir(ag) {
   ag.seg = 1;
 }
 
-function reconciliar(ag, aulas) {
+function reconciliar(ag, aulas, maxAnim) {
   for (const au of AULAS) {
     const objetivo = aulas[au.id].occ;
     const mios = ag.filter((a) => a.aula === au.id && a.estado !== 'saliendo');
     const diff = objetivo - mios.length;
     if (diff > 0) {
-      const directos = Math.max(0, diff - MAX_ANIM);
+      const directos = Math.max(0, diff - maxAnim);
       for (let i = 0; i < directos && ag.length < MAX; i++) ag.push(nuevo(au, false));
-      if (ag.length < MAX) ag.push(nuevo(au, true));
+      if (directos < diff && ag.length < MAX) ag.push(nuevo(au, true));
     } else if (diff < 0) {
       const sentados = mios.filter((a) => a.estado === 'sentado');
-      const directos = Math.max(0, -diff - MAX_ANIM);
+      const directos = Math.max(0, -diff - maxAnim);
       for (let i = 0; i < directos && i < sentados.length; i++) { liberar(sentados[i]); sentados[i].borrar = true; }
       if (sentados[directos]) salir(sentados[directos]);
       else if (!sentados.length) { liberar(mios[0]); mios[0].borrar = true; }
@@ -129,6 +129,7 @@ export function Personas() {
   const refs = useRef({});
   const agentes = useRef([]);
   const reloj = useRef(1);
+  const inicial = useRef(true);
 
   useLayoutEffect(() => {
     for (const k of PARTES) {
@@ -145,7 +146,13 @@ export function Personas() {
     const { aulas, vistaPiso } = useStore.getState();
 
     reloj.current += dt;
-    if (reloj.current > 0.25) { reloj.current = 0; reconciliar(ag, aulas); }
+    if (reloj.current > 0.25) {
+      reloj.current = 0;
+      // El primer conteo (snapshot) aparece directo en las aulas; solo los cambios posteriores se animan.
+      const hayDatos = Object.values(aulas).some((x) => x.occ > 0);
+      reconciliar(ag, aulas, inicial.current ? 0 : MAX_ANIM);
+      if (hayDatos) inicial.current = false;
+    }
 
     for (let i = ag.length - 1; i >= 0; i--) {
       const a = ag[i];
@@ -187,7 +194,7 @@ export function Personas() {
       } else if (sentado) {
         tL = tR = -Math.PI / 2; kL = kR = Math.PI / 2;
         const g = Math.sin(t * 0.7 + a.fase) * 0.06;
-        bL = -1.15 + g; bR = -1.05 - g;
+        bL = -0.55 + g; bR = -0.45 - g;
         dy = -0.4; inc = 0.06;
       } else {
         const g = Math.sin(t * 1.3 + a.fase) * 0.015;
