@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node.js
+node_modules/
+dist/
+build/
+
+# Variables de entorno
+.env
+
+# IDE
+.vscode/
+.idea/
+# Fotos de referencia y Blender (pesado, no va al repositorio)
+referencias/

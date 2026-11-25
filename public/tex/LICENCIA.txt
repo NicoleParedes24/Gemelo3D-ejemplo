@@ -1,0 +1,5 @@
+Texturas de ambientCG (https://ambientcg.com), licencia CC0 1.0 (dominio público).
+techo_rojo=CorrugatedSteel002, fibrocemento=CorrugatedSteel005, piedra=Rock022, adoquin=PavingStones037,
+adoquin_piedra=PavingStones115A, yeso=Plaster001, concreto=Concrete034, concreto_muro=Concrete031,
+pasto=Grass004, tierra=Ground037, asfalto=Asphalt025C, corteza=Bark014, madera=Wood049, roca=Rock030, grava=Gravel040
+orm.jpg: R=oclusión ambiental, G=rugosidad, B=metalicidad.

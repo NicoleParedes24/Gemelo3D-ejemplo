@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
+import { createPipeline } from './render/pipeline.js';
+import { setAnisotropy } from './render/pbr.js';
 import { createEnvironment } from './environment.js';
 import { buildCampus } from './campus.js';
 import { buildDecor } from './decor.js';
+import { buildBloqueH } from './bloqueh.js';
+import { setVegetationRenderer, setNearBudget, updateVegetation } from './vegetacion.js';
 import { DataBus } from './data/bus.js';
 import { Simulator } from './data/simulator.js';
 import { NatsSource } from './data/nats.js';
@@ -19,7 +19,7 @@ const q = new URLSearchParams(location.search);
 const sim = {
   hour: parseFloat(q.get('h') ?? '15.2'),
   wind: parseFloat(q.get('wind') ?? '9'),
-  cloud: parseFloat(q.get('cloud') ?? '0.15'),
+  cloud: parseFloat(q.get('cloud') ?? '0.45'),
   playing: !q.has('still'),
   speed: 1,
   live: false,
@@ -41,14 +41,9 @@ async function loadDoc() {
 
 // ---------- render ----------
 const app = document.getElementById('app');
-const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance' });
-const PR = Math.min(window.devicePixelRatio || 1, 1.5);
-renderer.setPixelRatio(PR);
-renderer.setSize(innerWidth, innerHeight);
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFShadowMap;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-app.appendChild(renderer.domElement);
+const pipe = createPipeline(app, q);
+const renderer = pipe.renderer;
+setAnisotropy(Math.min(8, renderer.capabilities.getMaxAnisotropy()));
 
 const labelRenderer = new CSS2DRenderer({ element: document.getElementById('labels') });
 labelRenderer.setSize(innerWidth, innerHeight);
@@ -69,17 +64,18 @@ controls.autoRotate = !q.has('still');
 controls.autoRotateSpeed = 0.28;
 controls.addEventListener('start', () => { controls.autoRotate = false; tween = null; });
 
-const rt = new THREE.WebGLRenderTarget(innerWidth * PR, innerHeight * PR, { type: THREE.HalfFloatType, samples: 4 });
-const composer = new EffectComposer(renderer, rt);
-composer.addPass(new RenderPass(scene, camera));
-const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.35, 0.45, 2.5);
-composer.addPass(bloom);
-composer.addPass(new OutputPass());
+pipe.init(scene, camera);
 
 // ---------- mundo fijo ----------
 const env = createEnvironment(scene, renderer);
+pipe.onTier.push((t) => env.setShadowSize(t.shadow));
+env.setShadowSize(pipe.tier.shadow);
 const campus = buildCampus(scene);
 buildDecor(scene);
+setVegetationRenderer(renderer);
+setNearBudget(pipe.tier.nearTrees);
+pipe.onTier.push((t) => setNearBudget(t.nearTrees));
+const bloqueH = await buildBloqueH(scene);
 
 // ---------- datos ----------
 const bus = new DataBus();
@@ -119,37 +115,25 @@ setSource(doc.fuente);
 const ui = createUI({ sim, bus, flyToObject, getDoc: () => manager.doc });
 const editor = createEditor({
   manager, bus, scene, camera, controls, dom: renderer.domElement,
-  surfaces: [env.terrain, campus.group, manager.group],
+  surfaces: [env.terrain, campus.group, bloqueH.group, manager.group],
   canSave, flyToObject, setSource, ui, getStatus: () => source.status,
 });
 
 addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
-  composer.setSize(innerWidth, innerHeight);
+  pipe.resize();
   labelRenderer.setSize(innerWidth, innerHeight);
 });
 
 // ---------- bucle ----------
 const clock = new THREE.Timer();
-let time = 0, booted = false, slow = 0, frames = 0, degraded = q.has('still');
+let time = 0, booted = false, expo = 1;
 function frame() {
   clock.update();
   const dt = Math.min(clock.getDelta(), 0.05);
   time += dt;
-  // calidad adaptativa: si el equipo no llega a ~35 fps, baja resolución y sombras una sola vez
-  if (!degraded && ++frames > 40) {
-    slow = slow * 0.95 + (dt > 0.028 ? 0.05 : 0);
-    if (slow > 0.8) {
-      degraded = true;
-      renderer.setPixelRatio(1);
-      composer.setPixelRatio(1);
-      env.sun.shadow.mapSize.set(2048, 2048);
-      env.sun.shadow.map?.dispose();
-      env.sun.shadow.map = null;
-    }
-  }
+  pipe.watch(dt);
   let dtH = 0;
   if (sim.live) {
     const d = new Date();
@@ -167,21 +151,28 @@ function frame() {
     if (tween.t >= 1) tween = null;
   }
   controls.update();
+  updateVegetation(camera);
 
   source.tick(dt, dtH, sim, time);
+  env.focus.copy(controls.target);
   env.update(sim.hour, sim.cloud, sim.wind, dt, camera, time);
   campus.update(env, sim.hour, time);
+  bloqueH.update(env, sim.hour, time, sim.wind, dt);
   manager.update(dt, time, env.night);
   editor.update(dt);
-  bloom.strength = 0.32 + env.night * 0.16;
-  bloom.threshold = 2.5 - env.night * 1.0;
-  renderer.toneMappingExposure = 0.8 + env.night * 0.4;
+  // exposición automática parcial (como una cámara): el atardecer no se ve negro, la noche sigue siendo noche
+  const target = 0.62 * Math.min(3.2, Math.max(0.85, Math.pow(0.75 / env.skyLum, 0.42)));
+  expo += (target - expo) * Math.min(1, dt * 2.5);
+  if (q.has('still')) expo = target;
+  renderer.toneMappingExposure = expo;
+  pipe.bloom.strength = 0.18 + env.night * 0.32;
+  pipe.bloom.threshold = 3.0 - env.night * 2.0;
   ui.update(time, source.status);
 
-  composer.render();
+  pipe.render();
   labelRenderer.render(scene, camera);
   if (!booted) { booted = true; document.getElementById('boot').classList.add('done'); }
   requestAnimationFrame(frame);
 }
-window.__eco = { sim, camera, controls, manager, bus, env, renderer, scene, bloom, editor, flyToObject, setSource };
+window.__eco = { bloqueH, sim, camera, controls, manager, bus, env, renderer, scene, pipe, editor, flyToObject, setSource };
 frame();

@@ -341,14 +341,14 @@ export function buildCampus(scene) {
 
   // ============ árboles ============
   {
-    const zones = [[-54, 43, -31, 43], [40, 93, -34, 60], [-10, 0, 42, 66], [-9999, 9999, 62.5, 80.5], [92, 114, -27, -8]];
+    const zones = [[-158, -48, -50, 68], [-54, 43, -31, 43], [40, 93, -34, 60], [-10, 0, 42, 66], [-9999, 9999, 62.5, 80.5], [92, 114, -27, -8]];
     const inZone = (x, z) => zones.some(([a, b, c, d]) => x > a && x < b && z > c && z < d);
     const list = [[], []];
     const push = (type, x, z, s, y) => list[type].push([x, y ?? terrainH(x, z), z, s, rnd() * 6.28, 0.82 + rnd() * 0.36]);
     // diseñados: jardineras, alineación de la acera
     for (let z = 10; z <= 34; z += 6) { push(0, -23, z, 1.05, 0.48); push(0, 12, z, 1.0, 0.48); }
     push(0, 26, 31, 1.1, 0.48); push(1, 31.5, 36, 1.0, 0.48); push(0, 36.5, 30.5, 0.95, 0.48);
-    for (let x = -124; x <= 124; x += 15.5) if (Math.abs(x + 5) > 8 && !(x > 56 && x < 76)) push(0, x, 61, 0.95);
+    for (let x = -124; x <= 124; x += 15.5) if (x > -50 && Math.abs(x + 5) > 8 && !(x > 56 && x < 76)) push(0, x, 61, 0.95);
     // dispersos
     let tries = 0;
     while (list[0].length + list[1].length < 430 && tries++ < 6000) {

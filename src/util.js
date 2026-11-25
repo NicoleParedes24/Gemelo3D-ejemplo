@@ -42,7 +42,9 @@ export const smooth = (a, b, x) => {
 export function terrainH(x, z) {
   const north = smooth(-52, -150, z);
   const south = smooth(105, 230, z);
-  const side = smooth(125, 260, Math.abs(x)) * smooth(10, 40, Math.abs(z - 72));
+  // el terreno se mantiene plano bajo el Bloque H (oeste del campus)
+  const flatH = smooth(-195, -155, x) * smooth(-80, -48, z);
+  const side = smooth(125, 260, Math.abs(x)) * smooth(10, 40, Math.abs(z - 72)) * (1 - flatH);
   const m = Math.max(north, south * 0.7, side * 0.8);
   if (m <= 0) return 0;
   const n = fbm(x * 0.006 + 3.1, z * 0.006 + 7.7, 3);
