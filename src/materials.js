@@ -6,16 +6,17 @@ const std = (o) => new THREE.MeshStandardMaterial(o);
 export const M = {
   white: std({ color: 0xe9e7e1, roughness: 0.82 }),
   concrete: std({ map: T.concreteTex(), roughness: 0.92 }),
-  darkConcrete: std({ color: 0x6f7275, roughness: 0.9 }),
+  darkConcrete: std({ map: T.stoneTex(), roughness: 0.94 }),
   spandrel: std({ color: 0x3b4249, roughness: 0.6, metalness: 0.3 }),
   brick: std({ map: T.brickTex(), roughness: 0.93 }),
   wood: std({ map: T.woodTex(), roughness: 0.75 }),
   woodPlain: std({ color: 0x9a6038, roughness: 0.75 }),
   roof: std({ map: T.gravelTex(), roughness: 1 }),
+  metalRoof: std({ map: T.metalRoofTex(), roughness: 0.72, metalness: 0.28 }),
   roofPlain: std({ color: 0x86888a, roughness: 1 }),
   paver: std({ map: T.paverTex(), roughness: 0.9 }),
   asphalt: std({ map: T.asphaltTex(), roughness: 0.95 }),
-  lawn: std({ color: 0x4f8038, roughness: 1, envMapIntensity: 0.3 }),
+  lawn: std({ map:T.grassTex(), color:0xffffff, roughness:1, envMapIntensity:0.35 }),
   steel: std({ color: 0x8d949b, roughness: 0.45, metalness: 0.8 }),
   darkMetal: std({ color: 0x23272c, roughness: 0.5, metalness: 0.7 }),
   mullion: std({ color: 0xcfd4d8, roughness: 0.35, metalness: 0.85 }),
@@ -26,16 +27,17 @@ export const M = {
   rubber: std({ color: 0x15171a, roughness: 0.9 }),
   water: std({ color: 0x1d5566, roughness: 0.04, metalness: 0.75, envMapIntensity: 1.6 }),
   // vidrio de ventanas: reflectante de día, encendido de noche (grupos A/B/C)
-  glass: std({ color: 0x7f9fbb, roughness: 0.07, metalness: 0.95, envMapIntensity: 1.7 }),
+  glass: std({ color: 0x526773, roughness: 0.2, metalness: 0.12, envMapIntensity: 0.9 }),
+  darkGlass: std({ color: 0x111b24, roughness: 0.14, metalness: 0.18, envMapIntensity: 1.1 }),
   glassLit: [
     [0xffd08a, 'A'], [0xf1f4ff, 'B'], [0xffb466, 'C'],
   ].map(([c, group]) => {
-    const m = std({ color: 0x7f9fbb, roughness: 0.07, metalness: 0.95, envMapIntensity: 1.7, emissive: c, emissiveIntensity: 0 });
+    const m = std({ color: 0x526773, roughness: 0.2, metalness: 0.12, envMapIntensity: 0.9, emissive: c, emissiveIntensity: 0 });
     m.userData.group = group;
     return m;
   }),
   atrium: std({
-    color: 0x6fa3bd, roughness: 0.04, metalness: 0.9, envMapIntensity: 1.9,
+    color: 0x91a8b4, roughness: 0.12, metalness: 0.08, envMapIntensity: 1.1,
     transparent: true, opacity: 0.5, depthWrite: false, side: THREE.DoubleSide,
   }),
   strip: std({ color: 0x222222, emissive: 0xffe2b0, emissiveIntensity: 0.6 }),

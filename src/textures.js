@@ -62,6 +62,49 @@ export function concreteTex() {
   blotches(x, 256, 256, 16, ['170,168,162', '210,208,202'], 30, 80, 0.3);
   return tex(c);
 }
+// Mampostería irregular para muros, zócalos y cerramientos del campus.
+// Las juntas y ligeras variaciones de tono rompen las superficies planas.
+export function stoneTex() {
+  const [c, x] = canvas(512, 512);
+  noiseFill(x, 512, 512, [115, 111, 103], 12);
+  x.fillStyle = 'rgba(48,45,41,0.45)';
+  for (let y = 0, row = 0; y < 512; y += 44, row++) {
+    const offset = row % 2 ? -32 : 0;
+    for (let xx = offset; xx < 512; xx += 82) {
+      const w = 72 + rnd() * 13, h = 34 + rnd() * 8;
+      const shade = 92 + Math.floor(rnd() * 43);
+      x.fillStyle = `rgb(${shade},${shade - 3},${shade - 8})`;
+      x.fillRect(xx + 2, y + 2, w, h);
+      x.fillStyle = 'rgba(235,229,215,0.13)';
+      x.fillRect(xx + 3, y + 3, w - 4, 2);
+      x.fillStyle = 'rgba(35,33,30,0.18)';
+      x.fillRect(xx + 3, y + h - 3, w - 4, 2);
+    }
+  }
+  blotches(x, 512, 512, 72, ['73,70,65', '154,148,136', '101,98,90'], 8, 35, 0.16);
+  return tex(c, 3, 2);
+}
+// Chapa roja pintada, con nervaduras finas y cambios de tono entre paños.
+export function metalRoofTex() {
+  const [c, x] = canvas(256, 256);
+  const grad = x.createLinearGradient(0, 0, 256, 0);
+  grad.addColorStop(0, '#873c32');
+  grad.addColorStop(0.18, '#b95d4c');
+  grad.addColorStop(0.42, '#a84d40');
+  grad.addColorStop(0.72, '#c16a56');
+  grad.addColorStop(1, '#8e4036');
+  x.fillStyle = grad;
+  x.fillRect(0, 0, 256, 256);
+  for (let i = 0; i < 32; i++) {
+    const px = i * 8;
+    x.fillStyle = 'rgba(55,30,27,0.24)';
+    x.fillRect(px, 0, 1.3, 256);
+    x.fillStyle = 'rgba(255,210,180,0.13)';
+    x.fillRect(px + 1.5, 0, 1.2, 256);
+  }
+  blotches(x, 256, 256, 26, ['93,48,40', '210,125,99', '139,62,52'], 8, 42, 0.11);
+  return tex(c, 4, 2);
+}
 export function gravelTex() {
   const [c, x] = canvas(256, 256);
   noiseFill(x, 256, 256, [128, 128, 126], 22);
@@ -200,5 +243,52 @@ export function textTex(text, { w = 1024, h = 160, font = '700 110px "Segoe UI",
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
   t.anisotropy = 8;
+  return t;
+}
+
+// Mural contemporáneo para el acceso del Bloque A, creado como textura para
+// conservar el color y la lectura gráfica del referente en tiempo real.
+export function muralTex(variant = 0) {
+  const [c, x] = canvas(512, 1024);
+  const bg = x.createLinearGradient(0, 0, 512, 1024);
+  bg.addColorStop(0, '#122a45'); bg.addColorStop(0.42, '#173e62');
+  bg.addColorStop(0.43, '#1c3851'); bg.addColorStop(1, '#10253c');
+  x.fillStyle = bg; x.fillRect(0, 0, 512, 1024);
+  const cx = variant ? 352 : 160, cy = 276;
+  for (let i = 11; i >= 0; i--) {
+    x.beginPath(); x.ellipse(cx, cy, 54 + i * 21, 50 + i * 28, 0, 0, Math.PI * 2);
+    x.fillStyle = ['#f2bd43','#ef6b37','#db3b46','#347ba0','#e2d8ae','#e28b36'][i % 6];
+    x.fill();
+  }
+  x.beginPath(); x.ellipse(cx, cy, 74, 67, 0, 0, Math.PI * 2);
+  x.fillStyle = '#142a40'; x.fill();
+  x.strokeStyle = 'rgba(255,238,190,0.86)'; x.lineWidth = 8;
+  for (let r = 0; r < 4; r++) {
+    x.beginPath(); x.ellipse(cx, cy, 92 + r * 20, 82 + r * 22, 0, 0.2, Math.PI * 1.8); x.stroke();
+  }
+  const palette = ['#f4c64e','#ec6b38','#d6444a','#2692a2','#e5d6b2','#4a86b3'];
+  for (let i = 0; i < 12; i++) {
+    const px = 24 + i * 42 + (variant ? 12 : 0);
+    x.beginPath(); x.moveTo(px, 390); x.bezierCurveTo(px-24, 480, px+38, 530, px+4, 620);
+    x.bezierCurveTo(px+40, 560, px+58, 482, px+26, 390); x.closePath();
+    x.fillStyle = palette[i % palette.length]; x.fill();
+  }
+  // Siluetas abstractas en la franja inferior, con trazos de mosaico.
+  for (let i = 0; i < 5; i++) {
+    const px = 50 + i * 100 + (variant ? 18 : 0);
+    x.fillStyle = palette[(i + 2) % palette.length];
+    x.beginPath(); x.ellipse(px, 744 + (i % 2) * 20, 31, 42, 0, 0, Math.PI * 2); x.fill();
+    x.beginPath(); x.moveTo(px-24, 790); x.lineTo(px+22, 790);
+    x.lineTo(px+66, 1024); x.lineTo(px-58, 1024); x.closePath(); x.fill();
+    x.strokeStyle = 'rgba(248,225,177,0.75)'; x.lineWidth = 5;
+    x.beginPath(); x.moveTo(px-10, 810); x.lineTo(px+8, 980); x.stroke();
+  }
+  x.fillStyle = 'rgba(246,220,165,0.72)';
+  for (let i = 0; i < 80; i++) {
+    const px = (i * 73 + 29) % 512, py = (i * 131 + 47) % 1024;
+    x.fillRect(px, py, 2 + i % 4, 2 + (i * 3) % 5);
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
   return t;
 }

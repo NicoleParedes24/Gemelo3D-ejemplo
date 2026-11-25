@@ -504,6 +504,70 @@
           0
         ]
       }
+    },
+    {
+      "id": "marquesina-solar-1",
+      "tipo": "marquesina_solar",
+      "nombre": "Marquesina solar",
+      "pos": [
+        85.28,
+        -111.34,
+        -96.7
+      ],
+      "rot": 0,
+      "params": {
+        "modulos": 6,
+        "filas": 1,
+        "separacion": 20,
+        "altura": 3.75
+      },
+      "dato": {
+        "subject": "",
+        "campo": "potencia_kw",
+        "unidad": "kW",
+        "max": 75,
+        "decimales": 0
+      },
+      "etiqueta": {
+        "visible": true,
+        "offset": [
+          0,
+          7,
+          0
+        ]
+      }
+    },
+    {
+      "id": "marquesina-solar-2",
+      "tipo": "marquesina_solar",
+      "nombre": "Marquesina solar",
+      "pos": [
+        129.27,
+        0.08,
+        -18.14
+      ],
+      "rot": 0,
+      "params": {
+        "modulos": 6,
+        "filas": 1,
+        "separacion": 20,
+        "altura": 3.75
+      },
+      "dato": {
+        "subject": "",
+        "campo": "potencia_kw",
+        "unidad": "kW",
+        "max": 75,
+        "decimales": 0
+      },
+      "etiqueta": {
+        "visible": true,
+        "offset": [
+          0,
+          7,
+          0
+        ]
+      }
     }
   ],
   "conexiones": [
