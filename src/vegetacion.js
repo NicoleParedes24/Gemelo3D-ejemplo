@@ -76,6 +76,14 @@ async function speciesKit(name) {
   });
   const depth = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: lm.map, alphaTest: 0.5, side: THREE.DoubleSide });
   const kit = { bg, lg, barkMat, leafMat, depth };
+  // las texturas de ez-tree vienen incrustadas y cargan de forma asíncrona: esperar antes de "fotografiar"
+  // (TextureLoader asigna .image recién al terminar de cargar, así que se consulta hasta que exista)
+  await Promise.all([bm.map, lm.map].filter(Boolean).map((t) => new Promise((r) => {
+    let n = 0;
+    const ok = () => { const i = t.image; return i && (i.complete === undefined || (i.complete && (i.naturalWidth || i.width))); };
+    const tick = () => (ok() || n++ > 200 ? r() : setTimeout(tick, 25));
+    tick();
+  })));
   kit.imp = bakeImpostor(kit, bm, lm);
   kitCache.set(name, kit);
   return kit;

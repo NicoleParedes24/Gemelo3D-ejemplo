@@ -17,7 +17,8 @@ export const WIND_ROUTES = [
 ];
 
 // Bloque H (modelo de Blender): origen y huella en el mundo, a la izquierda del Bloque B
-export const BLOQUE_H = { x: -96, z: 0, x0: -152, x1: -52, z0: -46, z1: 64 };
+// ry: el laboratorio (D) mira a la calle (sur) y la entrada (ángulo A-B) hacia el Bloque B
+export const BLOQUE_H = { x: -115, z: 15, ry: -Math.PI / 2, x0: -162, x1: -52, z0: -46, z1: 64 };
 
 export const COLORS = {
   solar: 0xffc531,

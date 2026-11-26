@@ -1,0 +1,693 @@
+{
+  "version": 1,
+  "fuente": {
+    "tipo": "simulador",
+    "url": "ws://localhost:8080",
+    "subjects": "campus.>",
+    "usuario": "",
+    "clave": ""
+  },
+  "tablero": [
+    {
+      "titulo": "Solar fotovoltaica",
+      "subtitulo": "250 kWp instalados",
+      "subject": "campus.calc.totales",
+      "campo": "solar_kw",
+      "unidad": "kW",
+      "decimales": 0,
+      "color": "#ffc531",
+      "icono": "sol",
+      "objeto": "solar-techo-a"
+    },
+    {
+      "titulo": "Eólica",
+      "subtitulo": "microeólica",
+      "subject": "campus.calc.totales",
+      "campo": "eolica_kw",
+      "unidad": "kW",
+      "decimales": 0,
+      "color": "#49d6ff",
+      "icono": "viento",
+      "objeto": "microeolica"
+    },
+    {
+      "titulo": "Baterías",
+      "subtitulo": "600 kWh",
+      "subject": "campus.med.energia.baterias",
+      "campo": "soc",
+      "unidad": "%",
+      "decimales": 0,
+      "color": "#62ff9a",
+      "icono": "bateria",
+      "objeto": "baterias"
+    },
+    {
+      "titulo": "Consumo del campus",
+      "subtitulo": "edificios + vehículos",
+      "subject": "campus.calc.totales",
+      "campo": "demanda_kw",
+      "unidad": "kW",
+      "decimales": 0,
+      "color": "#ff6f4d",
+      "icono": "edificio",
+      "objeto": "consumo"
+    },
+    {
+      "titulo": "Red eléctrica",
+      "subtitulo": "+ exporta · − importa",
+      "subject": "campus.med.red.medidor",
+      "campo": "potencia_kw",
+      "unidad": "kW",
+      "decimales": 0,
+      "color": "#dfe8ff",
+      "icono": "red",
+      "objeto": "transformador"
+    },
+    {
+      "titulo": "Energía limpia",
+      "subject": "campus.calc.totales",
+      "campo": "renovable_pct",
+      "unidad": "%",
+      "decimales": 0,
+      "color": "#62ff9a",
+      "icono": "hoja",
+      "tamano": "chico"
+    },
+    {
+      "titulo": "CO₂ evitado",
+      "subject": "campus.calc.totales",
+      "campo": "co2_kg",
+      "unidad": "kg",
+      "decimales": 0,
+      "color": "#9fe3ff",
+      "icono": "hoja",
+      "tamano": "chico"
+    }
+  ],
+  "objetos": [
+    {
+      "id": "solar-techo-a",
+      "tipo": "panel_solar",
+      "nombre": "Solar · Bloque A",
+      "pos": [
+        -5.1,
+        16.35,
+        -18.4
+      ],
+      "rot": 0,
+      "params": {
+        "filas": 3,
+        "columnas": 11,
+        "inclinacion": 12,
+        "pasoX": 4.7,
+        "pasoZ": 5.2
+      },
+      "dato": {
+        "subject": "campus.med.bloqueA.solar",
+        "campo": "potencia_kw",
+        "unidad": "kW",
+        "decimales": 0,
+        "max": 120
+      },
+      "etiqueta": {
+        "visible": true,
+        "offset": [
+          21.1,
+          4.2,
+          0
+        ]
+      }
+    },
+    {
+      "id": "solar-techo-b",
+      "tipo": "panel_solar",
+      "nombre": "Solar · Bloque B",
+      "pos": [
+        -41,
+        12.35,
+        -5.4
+      ],
+      "rot": 0,
+      "params": {
+        "filas": 8,
+        "columnas": 3,
+        "inclinacion": 12,
+        "pasoX": 4.7,
+        "pasoZ": 5.2
+      },
+      "dato": {
+        "subject": "campus.med.bloqueB.solar",
+        "campo": "potencia_kw",
+        "unidad": "kW",
+        "decimales": 0,
+        "max": 55
+      },
+      "etiqueta": {
+        "visible": true,
+        "offset": [
+          0,
+          4.6,
+          9.4
+        ]
+      }
+    },
+    {
+      "id": "solar-parqueadero",
+      "tipo": "marquesina_solar",
+      "nombre": "Parqueadero solar",
+      "pos": [
+        65,
+        0,
+        40
+      ],
+      "rot": 0,
+      "params": {
+        "modulos": 9,
+        "filas": 2,
+        "separacion": 20,
+        "altura": 3.75
+      },
+      "dato": {
+        "subject": "campus.med.parqueadero.solar",
+        "campo": "potencia_kw",
+        "unidad": "kW",
+        "decimales": 0,
+        "max": 75
+      },
+      "etiqueta": {
+        "visible": true,
+        "offset": [
+          3,
+          8,
+          10
+        ]
+      }
+    },
+    {
+      "id": "cargadores",
+      "tipo": "cargador_ev",
+      "nombre": "Carga de vehículos",
+      "pos": [
+        67.25,
+        0,
+        26.3
+      ],
+      "rot": 0,
+      "params": {
+        "cantidad": 7,
+        "separacion": 4.05
+      },
+      "dato": {
+        "subject": "campus.med.parqueadero.cargadores",
+        "campo": "potencia_kw",
+        "unidad": "kW",
+        "decimales": 0,
+        "max": 58
+      },
+      "etiqueta": {
+        "visible": true,
+        "offset": [
+          4.75,
+          4.5,
+          0
+        ]
+      }
+    },
+    {
+      "id": "microeolica",
+      "tipo": "microeolica",
+      "nombre": "Microeólica",
+      "pos": [
+        -6,
+        22.36,
+        -6
+      ],
+      "rot": 0,
+      "params": {
+        "cantidad": 3,
+        "separacion": 6.5
+      },
+      "dato": {
+        "subject": "campus.med.bloqueA.microeolica",
+        "campo": "potencia_kw",
+        "unidad": "kW",
+        "decimales": 1,
+        "max": 9
+      },
+      "etiqueta": {
+        "visible": true,
+        "offset": [
+          6.5,
+          7.1,
+          0
+        ]
+      }
+    },
+    {
+      "id": "centro-energia",
+      "tipo": "centro_energia",
+      "nombre": "Centro de energía",
+      "pos": [
+        52,
+        0,
+        -12
+      ],
+      "rot": 0,
+      "params": {
+        "texto": "CENTRO DE ENERGÍA"
+      },
+      "dato": {},
+      "etiqueta": {
+        "visible": false
+      }
+    },
+    {
+      "id": "baterias",
+      "tipo": "bateria",
+      "nombre": "Baterías",
+      "pos": [
+        52,
+        0,
+        -25
+      ],
+      "rot": 0,
+      "params": {
+        "contenedores": 4,
+        "separacion": 4,
+        "cerca": true
+      },
+      "dato": {
+        "subject": "campus.med.energia.baterias",
+        "campo": "soc",
+        "unidad": "%",
+        "decimales": 0,
+        "max": 100
+      },
+      "dato2": {
+        "subject": "campus.med.energia.baterias",
+        "campo": "potencia_kw",
+        "unidad": "kW",
+        "decimales": 0
+      },
+      "etiqueta": {
+        "visible": true,
+        "offset": [
+          0,
+          7,
+          0
+        ]
+      }
+    },
+    {
+      "id": "transformador",
+      "tipo": "transformador",
+      "nombre": "Red eléctrica",
+      "pos": [
+        98,
+        0,
+        -16
+      ],
+      "rot": 0,
+      "params": {},
+      "dato": {
+        "subject": "campus.med.red.medidor",
+        "campo": "potencia_kw",
+        "unidad": "kW",
+        "decimales": 0,
+        "max": 250
+      },
+      "etiqueta": {
+        "visible": true,
+        "offset": [
+          0,
+          6,
+          0
+        ]
+      }
+    },
+    {
+      "id": "consumo",
+      "tipo": "etiqueta",
+      "nombre": "Consumo del campus",
+      "pos": [
+        -22,
+        11.5,
+        -8
+      ],
+      "rot": 0,
+      "params": {},
+      "dato": {
+        "subject": "campus.med.campus.consumo",
+        "campo": "potencia_kw",
+        "unidad": "kW",
+        "decimales": 0,
+        "max": 235
+      },
+      "etiqueta": {
+        "visible": true,
+        "offset": [
+          0,
+          0,
+          0
+        ],
+        "color": "#ff6f4d"
+      }
+    },
+    {
+      "id": "sensor-1",
+      "tipo": "sensor",
+      "nombre": "Sensor / medidor",
+      "pos": [
+        104.72,
+        0.87,
+        2.54
+      ],
+      "rot": 0,
+      "params": {
+        "altura": 1.6
+      },
+      "dato": {
+        "subject": "",
+        "campo": "",
+        "unidad": "",
+        "max": 100,
+        "decimales": 1
+      },
+      "etiqueta": {
+        "visible": true,
+        "offset": [
+          0,
+          3,
+          0
+        ]
+      }
+    }
+  ],
+  "conexiones": [
+    {
+      "id": "c-techo-b",
+      "desde": "solar-techo-b",
+      "hacia": null,
+      "color": "#ffc531",
+      "radio": 0.2,
+      "puntos": [
+        [
+          -41,
+          13.35,
+          16.8
+        ],
+        [
+          -32.2,
+          13.35,
+          16.8
+        ],
+        [
+          -32.2,
+          13.35,
+          -8.6
+        ],
+        [
+          -32.2,
+          17.35,
+          -8.6
+        ],
+        [
+          -31.6,
+          17.35,
+          -9.2
+        ]
+      ],
+      "dato": {
+        "subject": "campus.med.bloqueB.solar",
+        "campo": "potencia_kw",
+        "max": 55
+      }
+    },
+    {
+      "id": "c-techo",
+      "desde": null,
+      "hacia": "centro-energia",
+      "color": "#ffc531",
+      "radio": 0.24,
+      "puntos": [
+        [
+          -31.6,
+          17.35,
+          -9.2
+        ],
+        [
+          32.62,
+          17.35,
+          -9.2
+        ],
+        [
+          32.62,
+          17.35,
+          -13.6
+        ],
+        [
+          32.62,
+          0.3,
+          -13.6
+        ]
+      ],
+      "dato": {
+        "subject": "campus.calc.totales",
+        "campo": "techo_kw",
+        "max": 184
+      }
+    },
+    {
+      "id": "c-parqueadero-b",
+      "desde": "solar-parqueadero",
+      "hacia": null,
+      "color": "#ffc531",
+      "radio": 0.2,
+      "puntos": [
+        [
+          86,
+          4.3,
+          47.2
+        ],
+        [
+          43.6,
+          4.3,
+          47.2
+        ],
+        [
+          43.6,
+          0.3,
+          47.2
+        ],
+        [
+          43.6,
+          0.3,
+          27.2
+        ]
+      ],
+      "dato": {
+        "subject": "campus.med.parqueadero.solar",
+        "campo": "potencia_kw",
+        "max": 75
+      }
+    },
+    {
+      "id": "c-parqueadero-a",
+      "desde": "solar-parqueadero",
+      "hacia": "centro-energia",
+      "color": "#ffc531",
+      "radio": 0.2,
+      "puntos": [
+        [
+          86,
+          4.3,
+          27.2
+        ],
+        [
+          43.6,
+          4.3,
+          27.2
+        ],
+        [
+          43.6,
+          0.3,
+          27.2
+        ],
+        [
+          43.6,
+          0.3,
+          -6.6
+        ],
+        [
+          50,
+          0.3,
+          -6.6
+        ]
+      ],
+      "dato": {
+        "subject": "campus.med.parqueadero.solar",
+        "campo": "potencia_kw",
+        "max": 75
+      }
+    },
+    {
+      "id": "c-microeolica",
+      "desde": "microeolica",
+      "hacia": null,
+      "color": "#49d6ff",
+      "radio": 0.14,
+      "puntos": [
+        [
+          -12.5,
+          22.6,
+          -4.4
+        ],
+        [
+          3.4,
+          22.6,
+          -4.4
+        ],
+        [
+          3.4,
+          22.6,
+          -9.2
+        ],
+        [
+          3.4,
+          17.5,
+          -9.2
+        ]
+      ],
+      "dato": {
+        "subject": "campus.med.bloqueA.microeolica",
+        "campo": "potencia_kw",
+        "max": 9
+      }
+    },
+    {
+      "id": "c-baterias",
+      "desde": "centro-energia",
+      "hacia": "baterias",
+      "color": "#62ff9a",
+      "radio": 0.26,
+      "puntos": [
+        [
+          52,
+          0.3,
+          -18.5
+        ]
+      ],
+      "dato": {
+        "subject": "campus.med.energia.baterias",
+        "campo": "potencia_kw",
+        "max": 150
+      }
+    },
+    {
+      "id": "c-consumo",
+      "desde": "centro-energia",
+      "hacia": null,
+      "color": "#ff6f4d",
+      "radio": 0.22,
+      "puntos": [
+        [
+          32.62,
+          0.3,
+          -11
+        ],
+        [
+          32.62,
+          8.25,
+          -11
+        ],
+        [
+          32.62,
+          8.25,
+          -8.38
+        ],
+        [
+          -31.4,
+          8.25,
+          -8.38
+        ],
+        [
+          -31.4,
+          8.25,
+          16.6
+        ]
+      ],
+      "dato": {
+        "subject": "campus.med.campus.consumo",
+        "campo": "potencia_kw",
+        "max": 235
+      }
+    },
+    {
+      "id": "c-montante",
+      "desde": null,
+      "hacia": null,
+      "color": "#ff6f4d",
+      "radio": 0.2,
+      "puntos": [
+        [
+          -8,
+          0.5,
+          -7.6
+        ],
+        [
+          -8,
+          21.4,
+          -7.6
+        ]
+      ],
+      "dato": {
+        "subject": "campus.med.campus.consumo",
+        "campo": "potencia_kw",
+        "max": 235
+      }
+    },
+    {
+      "id": "c-cargadores",
+      "desde": "centro-energia",
+      "hacia": "cargadores",
+      "color": "#b98bff",
+      "radio": 0.2,
+      "puntos": [
+        [
+          54,
+          0.3,
+          25.7
+        ],
+        [
+          80.5,
+          0.3,
+          25.7
+        ]
+      ],
+      "dato": {
+        "subject": "campus.med.parqueadero.cargadores",
+        "campo": "potencia_kw",
+        "max": 58
+      }
+    },
+    {
+      "id": "c-red",
+      "desde": "centro-energia",
+      "hacia": "transformador",
+      "color": "#dfe8ff",
+      "radio": 0.24,
+      "puntos": [
+        [
+          72,
+          0.3,
+          -10.4
+        ]
+      ],
+      "dato": {
+        "subject": "campus.med.red.medidor",
+        "campo": "potencia_kw",
+        "max": 250
+      }
+    }
+  ]
+}

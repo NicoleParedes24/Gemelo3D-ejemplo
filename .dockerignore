@@ -1,0 +1,11 @@
+node_modules
+**/node_modules
+dist
+.git
+referencias
+respaldos
+_respaldo_v1
+prototipo
+herramientas
+*.blend
+*.blend1

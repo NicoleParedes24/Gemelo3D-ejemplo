@@ -341,7 +341,7 @@ export function buildCampus(scene) {
 
   // ============ árboles ============
   {
-    const zones = [[-158, -48, -50, 68], [-54, 43, -31, 43], [40, 93, -34, 60], [-10, 0, 42, 66], [-9999, 9999, 62.5, 80.5], [92, 114, -27, -8]];
+    const zones = [[-166, -48, -50, 68], [-54, 43, -31, 43], [40, 93, -34, 60], [-10, 0, 42, 66], [-9999, 9999, 62.5, 80.5], [92, 114, -27, -8]];
     const inZone = (x, z) => zones.some(([a, b, c, d]) => x > a && x < b && z > c && z < d);
     const list = [[], []];
     const push = (type, x, z, s, y) => list[type].push([x, y ?? terrainH(x, z), z, s, rnd() * 6.28, 0.82 + rnd() * 0.36]);

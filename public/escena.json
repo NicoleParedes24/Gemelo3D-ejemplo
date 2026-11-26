@@ -21,14 +21,14 @@
     },
     {
       "titulo": "Eólica",
-      "subtitulo": "3 × 100 kW + microeólica",
+      "subtitulo": "microeólica",
       "subject": "campus.calc.totales",
       "campo": "eolica_kw",
       "unidad": "kW",
       "decimales": 0,
       "color": "#49d6ff",
       "icono": "viento",
-      "objeto": "ag2"
+      "objeto": "microeolica"
     },
     {
       "titulo": "Baterías",
@@ -96,8 +96,8 @@
       ],
       "rot": 0,
       "params": {
-        "filas": 3,
-        "columnas": 11,
+        "filas": 2,
+        "columnas": 3,
         "inclinacion": 12,
         "pasoX": 4.7,
         "pasoZ": 5.2
@@ -129,8 +129,8 @@
       ],
       "rot": 0,
       "params": {
-        "filas": 8,
-        "columnas": 3,
+        "filas": 3,
+        "columnas": 2,
         "inclinacion": 12,
         "pasoX": 4.7,
         "pasoZ": 5.2
@@ -148,158 +148,6 @@
           0,
           4.6,
           9.4
-        ]
-      }
-    },
-    {
-      "id": "solar-parqueadero",
-      "tipo": "marquesina_solar",
-      "nombre": "Parqueadero solar",
-      "pos": [
-        65,
-        0,
-        40
-      ],
-      "rot": 0,
-      "params": {
-        "modulos": 9,
-        "filas": 2,
-        "separacion": 20,
-        "altura": 3.75
-      },
-      "dato": {
-        "subject": "campus.med.parqueadero.solar",
-        "campo": "potencia_kw",
-        "unidad": "kW",
-        "decimales": 0,
-        "max": 75
-      },
-      "etiqueta": {
-        "visible": true,
-        "offset": [
-          3,
-          8,
-          10
-        ]
-      }
-    },
-    {
-      "id": "cargadores",
-      "tipo": "cargador_ev",
-      "nombre": "Carga de vehículos",
-      "pos": [
-        67.25,
-        0,
-        26.3
-      ],
-      "rot": 0,
-      "params": {
-        "cantidad": 7,
-        "separacion": 4.05
-      },
-      "dato": {
-        "subject": "campus.med.parqueadero.cargadores",
-        "campo": "potencia_kw",
-        "unidad": "kW",
-        "decimales": 0,
-        "max": 58
-      },
-      "etiqueta": {
-        "visible": true,
-        "offset": [
-          4.75,
-          4.5,
-          0
-        ]
-      }
-    },
-    {
-      "id": "ag1",
-      "tipo": "aerogenerador",
-      "nombre": "Aerogenerador 1",
-      "pos": [
-        -95,
-        24.33,
-        -150
-      ],
-      "rot": 0,
-      "params": {
-        "escala": 1,
-        "orientacion": 32
-      },
-      "dato": {
-        "subject": "campus.med.eolica.ag1",
-        "campo": "potencia_kw",
-        "unidad": "kW",
-        "decimales": 0,
-        "max": 100
-      },
-      "etiqueta": {
-        "visible": true,
-        "offset": [
-          0,
-          79,
-          0
-        ]
-      }
-    },
-    {
-      "id": "ag2",
-      "tipo": "aerogenerador",
-      "nombre": "Aerogenerador 2",
-      "pos": [
-        -12,
-        23.41,
-        -178
-      ],
-      "rot": 0,
-      "params": {
-        "escala": 1,
-        "orientacion": 32
-      },
-      "dato": {
-        "subject": "campus.med.eolica.ag2",
-        "campo": "potencia_kw",
-        "unidad": "kW",
-        "decimales": 0,
-        "max": 100
-      },
-      "etiqueta": {
-        "visible": true,
-        "offset": [
-          0,
-          79,
-          0
-        ]
-      }
-    },
-    {
-      "id": "ag3",
-      "tipo": "aerogenerador",
-      "nombre": "Aerogenerador 3",
-      "pos": [
-        72,
-        29.88,
-        -158
-      ],
-      "rot": 0,
-      "params": {
-        "escala": 1,
-        "orientacion": 32
-      },
-      "dato": {
-        "subject": "campus.med.eolica.ag3",
-        "campo": "potencia_kw",
-        "unidad": "kW",
-        "decimales": 0,
-        "max": 100
-      },
-      "etiqueta": {
-        "visible": true,
-        "offset": [
-          0,
-          79,
-          0
         ]
       }
     },
@@ -389,33 +237,6 @@
       }
     },
     {
-      "id": "transformador",
-      "tipo": "transformador",
-      "nombre": "Red eléctrica",
-      "pos": [
-        98,
-        0,
-        -16
-      ],
-      "rot": 0,
-      "params": {},
-      "dato": {
-        "subject": "campus.med.red.medidor",
-        "campo": "potencia_kw",
-        "unidad": "kW",
-        "decimales": 0,
-        "max": 250
-      },
-      "etiqueta": {
-        "visible": true,
-        "offset": [
-          0,
-          6,
-          0
-        ]
-      }
-    },
-    {
       "id": "consumo",
       "tipo": "etiqueta",
       "nombre": "Consumo del campus",
@@ -441,68 +262,6 @@
           0
         ],
         "color": "#ff6f4d"
-      }
-    },
-    {
-      "id": "panel-solar-1",
-      "tipo": "panel_solar",
-      "nombre": "Panel solar",
-      "pos": [
-        109.68,
-        0,
-        7.04
-      ],
-      "rot": 0,
-      "params": {
-        "filas": 3,
-        "columnas": 4,
-        "inclinacion": 12,
-        "pasoX": 4.7,
-        "pasoZ": 5.2
-      },
-      "dato": {
-        "subject": "",
-        "campo": "potencia_kw",
-        "unidad": "kW",
-        "max": 100,
-        "decimales": 0
-      },
-      "etiqueta": {
-        "visible": true,
-        "offset": [
-          0,
-          4,
-          0
-        ]
-      }
-    },
-    {
-      "id": "sensor-1",
-      "tipo": "sensor",
-      "nombre": "Sensor / medidor",
-      "pos": [
-        104.72,
-        0.87,
-        2.54
-      ],
-      "rot": 0,
-      "params": {
-        "altura": 1.6
-      },
-      "dato": {
-        "subject": "",
-        "campo": "",
-        "unidad": "",
-        "max": 100,
-        "decimales": 1
-      },
-      "etiqueta": {
-        "visible": true,
-        "offset": [
-          0,
-          3,
-          0
-        ]
       }
     }
   ],
@@ -578,184 +337,6 @@
         "subject": "campus.calc.totales",
         "campo": "techo_kw",
         "max": 184
-      }
-    },
-    {
-      "id": "c-parqueadero-b",
-      "desde": "solar-parqueadero",
-      "hacia": null,
-      "color": "#ffc531",
-      "radio": 0.2,
-      "puntos": [
-        [
-          86,
-          4.3,
-          47.2
-        ],
-        [
-          43.6,
-          4.3,
-          47.2
-        ],
-        [
-          43.6,
-          0.3,
-          47.2
-        ],
-        [
-          43.6,
-          0.3,
-          27.2
-        ]
-      ],
-      "dato": {
-        "subject": "campus.med.parqueadero.solar",
-        "campo": "potencia_kw",
-        "max": 75
-      }
-    },
-    {
-      "id": "c-parqueadero-a",
-      "desde": "solar-parqueadero",
-      "hacia": "centro-energia",
-      "color": "#ffc531",
-      "radio": 0.2,
-      "puntos": [
-        [
-          86,
-          4.3,
-          27.2
-        ],
-        [
-          43.6,
-          4.3,
-          27.2
-        ],
-        [
-          43.6,
-          0.3,
-          27.2
-        ],
-        [
-          43.6,
-          0.3,
-          -6.6
-        ],
-        [
-          50,
-          0.3,
-          -6.6
-        ]
-      ],
-      "dato": {
-        "subject": "campus.med.parqueadero.solar",
-        "campo": "potencia_kw",
-        "max": 75
-      }
-    },
-    {
-      "id": "c-ag1",
-      "desde": "ag1",
-      "hacia": null,
-      "color": "#49d6ff",
-      "radio": 0.26,
-      "suelo": true,
-      "puntos": [
-        [
-          -40,
-          0,
-          -112
-        ],
-        [
-          58,
-          0,
-          -78
-        ]
-      ],
-      "dato": {
-        "subject": "campus.med.eolica.ag1",
-        "campo": "potencia_kw",
-        "max": 100
-      }
-    },
-    {
-      "id": "c-ag2",
-      "desde": "ag2",
-      "hacia": null,
-      "color": "#49d6ff",
-      "radio": 0.26,
-      "suelo": true,
-      "puntos": [
-        [
-          10,
-          0,
-          -128
-        ],
-        [
-          58,
-          0,
-          -78
-        ]
-      ],
-      "dato": {
-        "subject": "campus.med.eolica.ag3",
-        "campo": "potencia_kw",
-        "max": 100
-      }
-    },
-    {
-      "id": "c-ag3",
-      "desde": "ag3",
-      "hacia": null,
-      "color": "#49d6ff",
-      "radio": 0.26,
-      "suelo": true,
-      "puntos": [
-        [
-          68,
-          0,
-          -112
-        ],
-        [
-          58,
-          0,
-          -78
-        ]
-      ],
-      "dato": {
-        "subject": "campus.med.eolica.ag3",
-        "campo": "potencia_kw",
-        "max": 100
-      }
-    },
-    {
-      "id": "c-eolica",
-      "desde": null,
-      "hacia": "centro-energia",
-      "color": "#49d6ff",
-      "radio": 0.3,
-      "suelo": true,
-      "puntos": [
-        [
-          58,
-          0,
-          -78
-        ],
-        [
-          64,
-          0,
-          -42
-        ],
-        [
-          64,
-          0,
-          -12
-        ]
-      ],
-      "dato": {
-        "subject": "campus.calc.totales",
-        "campo": "eolica_kw",
-        "max": 309
       }
     },
     {
@@ -872,49 +453,6 @@
         "subject": "campus.med.campus.consumo",
         "campo": "potencia_kw",
         "max": 235
-      }
-    },
-    {
-      "id": "c-cargadores",
-      "desde": "centro-energia",
-      "hacia": "cargadores",
-      "color": "#b98bff",
-      "radio": 0.2,
-      "puntos": [
-        [
-          54,
-          0.3,
-          25.7
-        ],
-        [
-          80.5,
-          0.3,
-          25.7
-        ]
-      ],
-      "dato": {
-        "subject": "campus.med.parqueadero.cargadores",
-        "campo": "potencia_kw",
-        "max": 58
-      }
-    },
-    {
-      "id": "c-red",
-      "desde": "centro-energia",
-      "hacia": "transformador",
-      "color": "#dfe8ff",
-      "radio": 0.24,
-      "puntos": [
-        [
-          72,
-          0.3,
-          -10.4
-        ]
-      ],
-      "dato": {
-        "subject": "campus.med.red.medidor",
-        "campo": "potencia_kw",
-        "max": 250
       }
     }
   ]

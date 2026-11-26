@@ -3,8 +3,10 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { pbr } from './render/pbr.js';
 import { glowTex } from './textures.js';
 import { BLOQUE_H } from './layout.js';
+import { terrainH } from './util.js';
 import { plantar, topiarios, flores, palmeras, foliageMaterial } from './vegetacion.js';
 import { autos } from './autos.js';
+import { addSolarShimmer } from './render/solarfx.js';
 
 // ------------------------------------------------------------------
 // Bloque H: modelo hecho en Blender (herramientas/blender/bloque_h.py).
@@ -18,6 +20,7 @@ const std = (color, roughness = 0.6, metalness = 0, o = {}) => new THREE.MeshSta
 function makeMaterials() {
   const M = {
     piedra: tex('piedra', 1.4, { rotation: rad(32), color: 0xffffff, macro: 0.3, macroScale: 0.05, env: 0.8 }),
+    piedra_h: tex('piedra', 1.0, { color: 0xffffff, macro: 0.25, macroScale: 0.05, env: 0.8 }),
     techo_rojo: tex('techo_rojo', 1.6, { color: 0xe6bdb6, metal: 0.25, macro: 0.4, macroScale: 0.03 }),
     yeso_crema: tex('yeso', 3, { color: 0xfff0d4, macro: 0.15 }),
     yeso_blanco: tex('yeso', 3, { color: 0xfbfbf8, macro: 0.12 }),
@@ -31,7 +34,8 @@ function makeMaterials() {
     tierra_jardin: tex('tierra', 1.5, { color: 0x8c7568 }),
     metal_negro: std(0x0b0b0d, 0.42, 0.75),
     metal: std(0xa4a9ae, 0.32, 1),
-    vidrio: std(0x3a4652, 0.05, 0.65, { envMapIntensity: 2.0, emissive: 0xffd9a0, emissiveIntensity: 0 }),
+    // vidrio semitransparente: deja ver el interior
+    vidrio: std(0x9fb4c0, 0.04, 0.1, { envMapIntensity: 1.6, transparent: true, opacity: 0.32, depthWrite: false, emissive: 0xffd9a0, emissiveIntensity: 0 }),
     vitral: std(0x8a5a22, 0.12, 0.3, { envMapIntensity: 1.2, emissive: 0xffa85a, emissiveIntensity: 0 }),
     malla: std(0xeeeeea, 0.45, 0.2),
     baldosa: tex('adoquin', 1.2, { color: 0xd88a62 }),
@@ -50,9 +54,44 @@ function makeMaterials() {
     pintura_azul: std(0x1648b0, 0.6),
     lampara: std(0x333333, 0.4, 0, { emissive: 0xffd8a0, emissiveIntensity: 0 }),
     goma: std(0x111111, 0.9),
+    baldosa_diag: tex('adoquin', 0.9, { color: 0xe39a6c, rotation: rad(45) }),
+    porcelanato: tex('concreto', 1.2, { color: 0xc9c2bb }),
+    marco_azul: std(0x1446a8, 0.4),
+    verde_aislador: std(0x157a4a, 0.35, 0, { emissive: 0x3dffa0, emissiveIntensity: 0 }),
+    cable_rojo: std(0x9a1208, 0.5, 0, { emissive: 0xff3a20, emissiveIntensity: 0 }),
+    cable_amarillo: std(0xd8a810, 0.5, 0, { emissive: 0xffd040, emissiveIntensity: 0 }),
+    piloto_verde: std(0x0f5a24, 0.3, 0, { emissive: 0x3dff7a, emissiveIntensity: 0 }),
+    piloto_azul: std(0x0a2a7a, 0.3, 0, { emissive: 0x4aa0ff, emissiveIntensity: 0 }),
+    piloto_rojo: std(0x6a0a06, 0.3, 0, { emissive: 0xff3020, emissiveIntensity: 0 }),
+    ev_verde: std(0x11804a, 0.6),
+    ev_led: std(0x0c3a22, 0.3, 0, { emissive: 0x3dffa0, emissiveIntensity: 1.5 }),
+    ev_cable: std(0x101114, 0.5, 0, { emissive: 0x3dffa0, emissiveIntensity: 0.8 }),
+    hv_metal: std(0xc8ccd2, 0.22, 1, { emissive: 0x7fdcff, emissiveIntensity: 0 }),
+    naranja: std(0xe8561a, 0.45),
+    panel_luz: std(0xf4f4f0, 0.3, 0, { emissive: 0xfffbf0, emissiveIntensity: 0.6 }),
+    tela_azul: std(0x0d1a4a, 0.9, 0, { side: THREE.DoubleSide }),
+    pintura_roja: std(0xb01810, 0.5),
+    metal_gris: std(0x7c8288, 0.4, 0.5),
+    pizarra: std(0xf2f2f2, 0.2),
+    panel_solar: std(0x0a1428, 0.15, 0.6, { envMapIntensity: 1.4, emissive: 0x3a7dff, emissiveIntensity: 0 }),
   };
   // la piedra laja de las fotos es más clara y verdosa que la textura base
-  M.piedra.color.setRGB(1.5, 1.56, 1.46);
+  addSolarShimmer(M.panel_solar);
+  // pulsos de corriente que recorren los cables de los módulos de tableros
+  for (const m of [M.cable_rojo, M.cable_amarillo, M.ev_cable]) {
+    m.onBeforeCompile = (sh) => {
+      sh.uniforms.uT = CABLE_T;
+      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vCW;')
+        .replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvCW = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+      sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec3 vCW;\nuniform float uT;')
+        .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+          float pc = pow(fract((vCW.x * 2.1 + vCW.y * 3.7 + vCW.z * 1.3) - uT * 1.6), 6.0);
+          totalEmissiveRadiance *= 0.35 + 3.0 * pc;`);
+    };
+    m.customProgramCacheKey = () => 'cablepulse';
+  }
+  M.piedra.color.setRGB(1.95, 2.0, 1.85);
+  M.piedra_h.color.setRGB(1.7, 1.95, 1.85);
   for (const [k, m] of Object.entries(M)) m.name = 'bh_' + k;
   return M;
 }
@@ -81,10 +120,13 @@ function microTurbine(pos) {
   return { g, rotor };
 }
 
+const CABLE_T = { value: 0 };
+
 export async function buildBloqueH(scene) {
   const root = new THREE.Group();
   root.name = 'BloqueH';
   root.position.set(BLOQUE_H.x, 0, BLOQUE_H.z);
+  root.rotation.y = BLOQUE_H.ry ?? 0;
   scene.add(root);
   const M = makeMaterials();
 
@@ -111,12 +153,17 @@ export async function buildBloqueH(scene) {
     }
   }
 
+  let techo = null, interior = null;
+  gltf.scene.traverse((o) => {
+    if (o.name === 'BloqueH_techo') techo = o;
+    if (o.name === 'BloqueH_interior') interior = o;
+  });
   const markers = [];
   gltf.scene.traverse((o) => {
     if (o.isMesh) {
       const name = (o.material?.name || '').replace(/\.\d+$/, '');
       if (M[name]) o.material = M[name];
-      o.castShadow = true;
+      o.castShadow = !(o.material?.transparent);
       o.receiveShadow = true;
     } else if (!o.isScene && o.children.length === 0) {
       markers.push(o);
@@ -142,17 +189,14 @@ export async function buildBloqueH(scene) {
   palmeras(veg, bucket.veg_palmera ?? [], tex('corteza', 1.5, { color: 0xb8a890 }));
   await plantar(veg, 'arbol', (bucket.veg_arbol ?? []).map((t) => ({ ...t, s: t.s * (0.85 + Math.random() * 0.35) })));
   await plantar(veg, 'cipres', bucket.veg_cipres ?? []);
-  // bosque de eucaliptos detrás del Bloque H (como en las fotos)
+  // bosque de eucaliptos al norte y al oeste del Bloque H (como en las fotos)
   const euc = [];
-  for (let i = 0; i < 34; i++) {
-    const x = BLOQUE_H.x0 - 6 + Math.random() * (BLOQUE_H.x1 - BLOQUE_H.x0 + 10);
-    const z = BLOQUE_H.z0 - 10 - Math.random() * 26;
-    euc.push({ x, y: 0, z, s: 0.8 + Math.random() * 0.45 });
-  }
-  for (let i = 0; i < 10; i++) euc.push({ x: BLOQUE_H.x0 - 8 - Math.random() * 14, y: 0, z: -40 + i * 9 + Math.random() * 4, s: 0.8 + Math.random() * 0.4 });
+  const addEuc = (x, z) => euc.push({ x, y: terrainH(x, z) - 0.2, z, s: 0.8 + Math.random() * 0.45 });
+  for (let i = 0; i < 30; i++) addEuc(BLOQUE_H.x0 + Math.random() * (BLOQUE_H.x1 - BLOQUE_H.x0 - 8), BLOQUE_H.z0 - 4 - Math.random() * 22);
+  for (let i = 0; i < 12; i++) addEuc(BLOQUE_H.x0 - 4 - Math.random() * 12, -40 + i * 7 + Math.random() * 4);
   await plantar(veg, 'eucalipto', euc);
 
-  const cars = autos(root, (bucket.auto ?? []).map((t) => ({ x: t.x - BLOQUE_H.x, y: t.y, z: t.z - BLOQUE_H.z, ry: t.ry })));
+  const cars = autos(scene, bucket.auto ?? []);
 
   // charcos de luz bajo los faroles (de noche)
   const lamps = [...(bucket.luz_farol ?? []), ...(bucket.luz_puntual ?? [])];
@@ -179,6 +223,25 @@ export async function buildBloqueH(scene) {
     return p;
   });
 
+  // iluminación interior (lámparas del edificio): luces puntuales sin sombra, en coordenadas locales
+  const INTERIOR = [            // pocas luces: cada luz extra encarece todos los materiales en GPUs integradas
+    [-5, 4.6, -3, 30],           // hall
+    [-4.5, 3.4, -22.5, 24],      // laboratorio de tableros
+    [14, 3.3, 5.9, 16],          // pasillo
+    [26, 3.6, 3.5, 18],          // alta tensión
+    [27, 8.6, -2, 22],           // segundo piso
+    [2, 3.6, 13, 20],            // aulas de E
+  ];
+  const interiorLights = INTERIOR.map(([x, y, z, I]) => {
+    const p = new THREE.PointLight(0xfff4e6, I, 18, 1.3);
+    p.position.set(x, y, z);
+    p.userData.I = I;
+    root.add(p);
+    return p;
+  });
+  M.panel_luz.emissiveIntensity = 1.4;
+  M.madera.envMapIntensity = 1.2;
+
   let turbine = null;
   if (bucket.microeolica?.[0]) {
     const t = bucket.microeolica[0];
@@ -193,11 +256,33 @@ export async function buildBloqueH(scene) {
     M.vidrio.emissiveIntensity = n * occupied * 0.55;
     M.vitral.emissiveIntensity = n * 1.1;
     M.lampara.emissiveIntensity = n * 5;
+    M.panel_luz.emissiveIntensity = 1.4 + n * 1.0;
     poolMat.opacity = n * 0.38;
     for (const p of accessLights) p.intensity = n * 14;
+    for (const p of interiorLights) p.intensity = p.userData.I * (0.85 + 0.35 * n);
     cars.update(n);
+    // equipos que "brillan" con la energía: jaula de alta tensión en horario de prácticas
+    // y paneles solares según el sol (un barrido de luz recorre la terraza)
+    const clase = on(hour, 7.2, 21);
+    const zap = Math.pow(Math.max(0, Math.sin(time * 2.3)), 6) + 0.25 * Math.max(0, Math.sin(time * 11.0));
+    M.hv_metal.emissiveIntensity = clase * (0.25 + 1.6 * zap);
+    M.verde_aislador.emissiveIntensity = clase * (0.08 + 0.5 * zap);
+    // tableros energizados en horario de prácticas
+    CABLE_T.value = time;
+    M.ev_led.emissiveIntensity = 1.2 + 1.0 * (0.5 + 0.5 * Math.sin(time * 2.2));   // cargando
+    M.cable_rojo.emissiveIntensity = M.cable_amarillo.emissiveIntensity = clase * 0.9;
+    M.piloto_verde.emissiveIntensity = clase * 2.2;
+    const blink = Math.sin(time * 3.0) > 0 ? 1 : 0.35;
+    M.piloto_azul.emissiveIntensity = clase * 1.6 * blink;
+    M.piloto_rojo.emissiveIntensity = clase * 1.4 * (1.35 - blink);
+    const sol = Math.max(0, env.sunDir.y);
+    M.panel_solar.emissiveIntensity = Math.min(1, sol * 1.4) * 0.06;
     if (turbine) turbine.rotor.rotation.x += dt * (1.5 + wind * 0.9);
   }
 
-  return { group: root, vegetation: veg, update };
+  // vista "casa de muñecas": oculta los techos para ver el interior
+  function setRoof(visible) {
+    techo?.traverse((o) => { o.visible = visible; });
+  }
+  return { group: root, vegetation: veg, update, setRoof, techo, interior };
 }

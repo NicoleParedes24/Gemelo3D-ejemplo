@@ -1,0 +1,11 @@
+services:
+  visor:
+    build: .
+    image: ecocampus-visor3d
+    container_name: ecocampus-visor3d
+    restart: unless-stopped
+    ports:
+      - "${PUERTO:-80}:80"
+    volumes:
+      # la escena se puede reemplazar en la MV sin recompilar (solo recargar la página)
+      - ./public/escena.json:/usr/share/nginx/html/escena.json:ro

@@ -19,11 +19,10 @@
     border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35); }
 
   /* marca */
-  #brand { position: fixed; top: 18px; left: 18px; padding: 12px 16px; display: flex; gap: 12px; align-items: center; }
-  #brand .logo { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center;
-    background: linear-gradient(135deg, #1f8f5f, #49d6ff); }
-  #brand h1 { margin: 0; font-size: 17px; letter-spacing: 0.04em; }
-  #brand p { margin: 0; color: var(--dim); font-size: 12px; }
+  #brand { position: fixed; top: 18px; left: 18px; padding: 12px 16px; display: flex; gap: 11px; align-items: center; }
+  #brand .logo { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center;
+    background: linear-gradient(145deg, #23a878, #28c9d6); box-shadow: 0 4px 16px rgba(40,201,214,.24); }
+  #brand h1 { margin: 0; font-size: 16px; letter-spacing: 0.09em; font-weight: 750; }
   .live.off { background: #ff6f4d; box-shadow: 0 0 8px #ff6f4d; }
   #cards-sm { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px; }
   #cards-sm:empty { display: none; }
@@ -32,6 +31,8 @@
   .mini b { font-size: 14px; font-variant-numeric: tabular-nums; color: var(--c); }
   .card.stale .val, .mini.stale b { opacity: 0.45; }
   #cards { display: flex; flex-direction: column; gap: 6px; }
+  #cards .group-title { padding: 7px 2px 2px; border-top: 1px solid var(--line); color: var(--dim); font-size: 10.5px; letter-spacing: .025em; }
+  #cards .group-title:first-child { border-top: 0; padding-top: 2px; }
   .lbl.stale { opacity: 0.6; filter: grayscale(0.7); }
   .lbl .v2 { color: var(--dim, #9fb0c0); font-weight: 500; }
   .lbl .v2:empty, .lbl .v1:empty { display: none; }
@@ -42,6 +43,45 @@
   .live { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--batt); margin-right: 6px;
     box-shadow: 0 0 8px var(--batt); animation: pulse 1.6s infinite; }
   @keyframes pulse { 50% { opacity: 0.35; } }
+
+
+
+
+  /* créditos */
+  #creditos { position: fixed; left: 18px; bottom: 76px; padding: 12px 16px 13px; font-size: 12px; z-index: 5; }
+  #creditos h5 { margin: 0 0 9px; font-size: 12.5px; font-weight: 650; letter-spacing: .02em; }
+  #creditos h5 em { font-style: normal; color: var(--batt); }
+  #creditos h5 span { color: var(--dim); font-weight: 500; }
+  #creditos .cols { display: grid; grid-template-columns: auto auto; column-gap: 26px; }
+  #creditos .cols div { display: flex; flex-direction: column; gap: 2px; }
+  #creditos b { font-weight: 600; color: var(--txt); }
+  #creditos small { color: var(--dim); font-size: 11.5px; }
+  @media (max-width: 900px) {
+    #creditos { left: 18px; bottom: 76px; max-width: min(380px, calc(100vw - 36px)); }
+    #creditos h5 { line-height: 1.45; }
+  }
+
+  /* energía del Bloque H */
+  #energia-h { position: fixed; right: 18px; bottom: 76px; padding: 10px 14px; min-width: 230px; display: none; font-size: 12px; }
+  body.bh-open #energia-h, body.touring #energia-h { display: block; }
+  #energia-h h4 { margin: 0 0 6px; font-size: 13px; }
+  #energia-h div { display: flex; align-items: center; gap: 8px; padding: 2px 0; color: var(--dim); }
+  #energia-h i { width: 14px; height: 3px; border-radius: 2px; background: var(--c); box-shadow: 0 0 6px var(--c); }
+  #energia-h b { margin-left: auto; color: var(--c); font-variant-numeric: tabular-nums; }
+
+  /* recorrido guiado: rótulo pequeño y discreto */
+  #tour { position: fixed; left: 50%; bottom: 76px; transform: translateX(-50%); display: none; z-index: 20; }
+  body.touring #tour { display: block; }
+  body.touring #panel, body.touring #dock, body.touring #legend, body.touring #labels { opacity: 0; pointer-events: none; transition: opacity .4s; }
+  .tour-card { display: flex; align-items: center; gap: 10px; padding: 4px 10px; border-radius: 999px;
+    background: rgba(12, 18, 26, 0.38); box-shadow: none; }
+  .tour-card b:empty { display: none; }
+  .tour-card b { font-size: 13px; font-weight: 600; letter-spacing: .03em; color: rgba(255,255,255,.88); }
+  .tour-card span, .tour-card .dots { display: none; }
+  .tour-stop { background: none; border: none; color: rgba(255,255,255,.45); padding: 2px 6px; font: inherit; font-size: 11px; cursor: pointer; }
+  .tour-stop:hover { color: #fff; }
+  #tour.fade .tour-card b { animation: tourIn .6s ease; }
+  @keyframes tourIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
   /* panel */
   #panel { position: fixed; top: 92px; left: 18px; width: 268px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
@@ -65,23 +105,39 @@
   .stats div { background: rgba(255, 255, 255, 0.035); border-radius: 9px; padding: 7px 9px; }
   .stats span { display: block; font-size: 10.5px; color: var(--dim); }
   .stats b { font-size: 14px; font-variant-numeric: tabular-nums; }
+  #panel.dashboard-ref { width: 272px; padding: 10px 12px 8px; gap: 4px; }
+  #panel.dashboard-ref #cards { gap: 0; }
+  #panel.dashboard-ref .card { grid-template-columns: 14px 1fr auto; gap: 9px; padding: 8px 2px; border: 0; border-radius: 0; background: transparent; }
+  #panel.dashboard-ref .card:hover { background: rgba(255,255,255,.055); }
+  #panel.dashboard-ref .card .ico { width: 14px; height: 3px; border-radius: 3px; background: var(--c); box-shadow: 0 0 7px color-mix(in srgb, var(--c) 60%, transparent); }
+  #panel.dashboard-ref .card .ico svg { display: none; }
+  #panel.dashboard-ref .card .name { color: var(--txt); font-size: 12px; }
+  #panel.dashboard-ref .card .sub { display: none; }
+  #panel.dashboard-ref .card .val { font-size: 15px; }
+  #panel.dashboard-ref .card .meter { grid-column: 2 / 4; height: 3px; margin: -4px 3px 0 0; border-radius: 3px; background: rgba(255,255,255,.12); overflow: hidden; }
+  #panel.dashboard-ref .card .meter i { display: block; height: 100%; width: 0; background: var(--c); transition: width .25s; }
+  #panel.dashboard-ref #cards-sm { border-top: 1px solid var(--line); padding-top: 6px; margin-top: 2px; }
+  #panel.dashboard-ref .mini { background: transparent; padding: 3px 2px; }
+  #panel.dashboard-ref .mini span { font-size: 10px; }
+  #panel.dashboard-ref .mini b { color: var(--txt); font-size: 14px; }
 
   /* dock */
-  #dock { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); width: min(1040px, calc(100vw - 36px));
-    padding: 12px 16px; display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center; }
+  #dock { position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); width: min(720px, calc(100vw - 36px));
+    padding: 6px 12px 14px; display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; border-radius: 12px; }
   .transport { display: flex; align-items: center; gap: 10px; }
-  #play { width: 42px; height: 42px; border-radius: 50%; border: 0; cursor: pointer; background: #fff; color: #0c121a; display: grid; place-items: center; }
-  #clock { font-size: 26px; font-weight: 650; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; min-width: 76px; }
+  #play { width: 30px; height: 30px; border-radius: 50%; border: 0; cursor: pointer; background: #fff; color: #0c121a; display: grid; place-items: center; }
+  #clock { font-size: 17px; font-weight: 650; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; min-width: 50px; }
+  #phase { display: none; }
   #phase { font-size: 11px; color: var(--dim); }
   .speeds { display: flex; gap: 3px; margin-top: 3px; }
   .speeds button, .pill { border: 1px solid var(--line); background: transparent; color: var(--dim); border-radius: 7px; font: inherit; font-size: 11px;
     padding: 2px 7px; cursor: pointer; }
   .speeds button.on, .pill.on { background: rgba(255, 255, 255, 0.16); color: #fff; }
-  .timeline { position: relative; height: 68px; }
+  .timeline { position: relative; height: 34px; }
   #chart { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 9px; background: rgba(255, 255, 255, 0.03); }
   #hour { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; }
-  .ticks { position: absolute; left: 0; right: 0; bottom: -15px; display: flex; justify-content: space-between; font-size: 10px; color: var(--dim); pointer-events: none; }
-  .knobs { display: grid; gap: 8px; min-width: 210px; }
+  .ticks { position: absolute; left: 0; right: 0; bottom: -13px; display: flex; justify-content: space-between; font-size: 9px; color: var(--dim); pointer-events: none; }
+  .knobs { display: grid; gap: 4px; min-width: 110px; }
   .knob label { display: flex; justify-content: space-between; font-size: 11px; color: var(--dim); margin-bottom: 2px; }
   .knob label b { color: var(--txt); font-variant-numeric: tabular-nums; }
   input[type="range"].r { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.18); outline: none; }
@@ -94,7 +150,7 @@
   #legend { position: fixed; right: 18px; top: 66px; padding: 10px 14px; font-size: 11.5px; color: var(--dim); display: grid; gap: 5px; }
   #legend div { display: flex; align-items: center; gap: 8px; }
   #legend i { width: 22px; height: 4px; border-radius: 3px; background: var(--c); box-shadow: 0 0 8px var(--c); }
-  #hint { position: fixed; right: 18px; bottom: 130px; font-size: 11px; color: rgba(255, 255, 255, 0.55); text-shadow: 0 1px 3px #000; }
+  #hint { position: fixed; right: 18px; bottom: 70px; font-size: 11px; color: rgba(255, 255, 255, 0.55); text-shadow: 0 1px 3px #000; }
 
   /* etiquetas 3D */
   .lbl { display: flex; align-items: center; gap: 6px; padding: 4px 9px 4px 7px; border-radius: 20px; white-space: nowrap; font-size: 11.5px;
@@ -113,24 +169,50 @@
     #panel { width: 210px; top: 84px; } .card .sub, #legend, #hint, .stats { display: none; }
     #dock { grid-template-columns: 1fr; gap: 20px; } .knobs { grid-template-columns: 1fr 1fr; }
   }
+  @media (min-width: 420px) and (max-width: 860px) {
+    #panel { width: 295px; }
+    .card .sub { display: block; }
+    .stats { display: grid; }
+  }
+  @media (max-width: 419px) {
+    #creditos { bottom: 76px; padding: 9px 11px; font-size: 11px; }
+    #creditos .cols { column-gap: 14px; }
+    #creditos h5 { font-size: 11px; }
+  }
 </style>
 </head>
 <body>
 <div id="app"></div>
 <div id="labels"></div>
 <div id="boot">CONSTRUYENDO CAMPUS…</div>
+<script>
+  // si algo falla al arrancar, mostrar el error en vez de quedarse en negro
+  (function () {
+    const show = (m) => {
+      const b = document.getElementById('boot');
+      if (b && !b.classList.contains('done')) {
+        b.style.letterSpacing = '0'; b.style.whiteSpace = 'pre-wrap'; b.style.textAlign = 'center'; b.style.padding = '24px';
+        b.textContent = 'No se pudo cargar el campus:\n' + m + '\n\n(F12 → Consola para más detalle)';
+      }
+    };
+    addEventListener('error', (e) => show(e.message || String(e.error)));
+    addEventListener('unhandledrejection', (e) => show(String(e.reason && (e.reason.stack || e.reason.message) || e.reason)));
+  })();
+</script>
 
 <header id="brand" class="glass">
-  <div class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div>
-  <div><h1>ECOCAMPUS</h1><p><span class="live" id="live"></span><span id="source">Conectando…</span></p></div>
+  <div class="logo"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Energía renovable"><path d="M19.5 4.5C12 4.2 6.3 6.8 5.2 12.3c-.6 3 1.5 5.2 4.3 4.8 5.3-.8 8.4-5.8 10-12.6Z"/><path d="m13.8 8.5-4.4 6h3.4l-1 4.8 4.8-6.8h-3.4l.6-4Z"/></svg></div>
+  <div><h1>ECOCAMPUS</h1></div>
 </header>
 
-<aside id="panel" class="glass"><div id="cards"></div><div id="cards-sm"></div></aside>
+<aside id="panel" class="glass dashboard-ref"><div id="cards"></div><div id="cards-sm"></div></aside>
 
 <div id="tools">
   <button class="pill" id="t-edit">✎ Editar escena</button>
   <button class="pill on" id="t-labels">Etiquetas</button>
   <button class="pill" id="t-home">Vista general</button>
+  <button class="pill" id="t-bh">Ver interior Bloque H</button>
+  <button class="pill" id="t-tour">▶ Recorrido Bloque H</button>
 </div>
 <div id="legend" class="glass">
   <div style="--c:var(--solar)"><i></i>Solar</div>
@@ -139,6 +221,13 @@
   <div style="--c:var(--load)"><i></i>Consumo edificios</div>
   <div style="--c:var(--ev)"><i></i>Carga vehículos</div>
   <div style="--c:var(--grid)"><i></i>Red</div>
+</div>
+<div id="creditos" class="glass">
+  <h5><em>EcoCampus 2026</em> <span>| Universidad Politécnica Salesiana</span></h5>
+  <div class="cols">
+    <div><b>Marcelo García</b><b>Daniela Galarza</b></div>
+    <div><b>Rodrigo Tufiño</b><b>Nicole Paredes</b></div>
+  </div>
 </div>
 <div id="hint">Arrastra para orbitar · rueda para acercar · clic derecho para desplazar</div>
 
@@ -157,8 +246,8 @@
     <div class="ticks"><span>00</span><span>03</span><span>06</span><span>09</span><span>12</span><span>15</span><span>18</span><span>21</span><span>24</span></div>
   </div>
   <div class="knobs">
-    <div class="knob" style="--c:var(--wind)"><label>Viento <b id="l-wind">9 m/s</b></label><input class="r" id="wind" type="range" min="0" max="26" step="0.5" value="9" /></div>
-    <div class="knob" style="--c:#cfd8e3"><label>Nubosidad <b id="l-cloud">15%</b></label><input class="r" id="cloud" type="range" min="0" max="1" step="0.01" value="0.15" /></div>
+    <div class="knob" style="--c:var(--wind)"><label>💨 <b id="l-wind">9 m/s</b></label><input class="r" id="wind" type="range" min="0" max="26" step="0.5" value="9" /></div>
+    <div class="knob" style="--c:#cfd8e3" hidden><label>Nubosidad <b id="l-cloud">0%</b></label><input class="r" id="cloud" type="range" min="0" max="1" step="0.01" value="0" /></div>
   </div>
 </footer>
 

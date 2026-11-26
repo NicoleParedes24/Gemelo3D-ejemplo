@@ -7,6 +7,10 @@ import { createEnvironment } from './environment.js';
 import { buildCampus } from './campus.js';
 import { buildDecor } from './decor.js';
 import { buildBloqueH } from './bloqueh.js';
+import { createTour } from './recorrido.js';
+import { createEnergiaH } from './energiaH.js';
+import { addSolarShimmer, updateSolarFx } from './render/solarfx.js';
+import { M as MATS } from './materials.js';
 import { setVegetationRenderer, setNearBudget, updateVegetation } from './vegetacion.js';
 import { DataBus } from './data/bus.js';
 import { Simulator } from './data/simulator.js';
@@ -19,7 +23,7 @@ const q = new URLSearchParams(location.search);
 const sim = {
   hour: parseFloat(q.get('h') ?? '15.2'),
   wind: parseFloat(q.get('wind') ?? '9'),
-  cloud: parseFloat(q.get('cloud') ?? '0.45'),
+  cloud: parseFloat(q.get('cloud') ?? '0'),
   playing: !q.has('still'),
   speed: 1,
   live: false,
@@ -76,6 +80,8 @@ setVegetationRenderer(renderer);
 setNearBudget(pipe.tier.nearTrees);
 pipe.onTier.push((t) => setNearBudget(t.nearTrees));
 const bloqueH = await buildBloqueH(scene);
+const energiaH = createEnergiaH(bloqueH);
+addSolarShimmer(MATS.panel);   // paneles del campus (techos y marquesina)
 
 // ---------- datos ----------
 const bus = new DataBus();
@@ -104,6 +110,32 @@ function flyToObject(id) {
   dir.normalize();
   flyTo(c.clone().add(dir.multiplyScalar(Math.max(14, size * 1.3))), c);
 }
+{
+  let open = false;
+  const b = document.getElementById('t-bh');
+  const setOpen = (v) => {
+    open = v;
+    bloqueH.setRoof?.(!open);
+    document.body.classList.toggle('bh-open', open);
+    b.classList.toggle('on', open);
+    b.textContent = open ? 'Mostrar techo Bloque H' : 'Ver interior Bloque H';
+  };
+  b.onclick = () => {
+    setOpen(!open);
+    if (open) flyTo(new THREE.Vector3(-72, 52, -28), new THREE.Vector3(-113, 0, 13));   // desde el lado de la entrada (ángulo A-B)
+  };
+  // clic en una etiqueta del Bloque H: vuela a ver ese equipo (quita el techo si está adentro)
+  energiaH.onPick = (v) => {
+    setOpen(!v.techo);
+    flyTo(new THREE.Vector3(...v.p), new THREE.Vector3(...v.t));
+  };
+}
+const tour = createTour({
+  camera, controls, bloqueH, sim,
+  onStart: () => { tween = null; },
+  onEnd: () => { document.body.classList.remove('bh-open'); const b = document.getElementById('t-bh'); b.classList.remove('on'); b.textContent = 'Ver interior Bloque H'; },
+});
+document.getElementById('t-tour').onclick = () => (tour.active ? tour.stop() : tour.start());
 document.getElementById('t-home').onclick = () => flyTo(new THREE.Vector3(...HOME.p), new THREE.Vector3(...HOME.t));
 
 // ---------- escena dinámica ----------
@@ -150,7 +182,8 @@ function frame() {
     controls.target.lerpVectors(tween.t0, tween.t1, k);
     if (tween.t >= 1) tween = null;
   }
-  controls.update();
+  tour.update(dt);
+  if (!tour.active) controls.update();
   updateVegetation(camera);
 
   source.tick(dt, dtH, sim, time);
@@ -158,6 +191,9 @@ function frame() {
   env.update(sim.hour, sim.cloud, sim.wind, dt, camera, time);
   campus.update(env, sim.hour, time);
   bloqueH.update(env, sim.hour, time, sim.wind, dt);
+  energiaH.update(dt, env, sim);
+  env.cloud = sim.cloud;
+  updateSolarFx(time, env);
   manager.update(dt, time, env.night);
   editor.update(dt);
   // exposición automática parcial (como una cámara): el atardecer no se ve negro, la noche sigue siendo noche
@@ -171,8 +207,8 @@ function frame() {
 
   pipe.render();
   labelRenderer.render(scene, camera);
-  if (!booted) { booted = true; document.getElementById('boot').classList.add('done'); }
+  if (!booted) { booted = true; const bt = document.getElementById('boot'); bt.classList.add('done'); setTimeout(() => bt.remove(), 700); }
   requestAnimationFrame(frame);
 }
-window.__eco = { bloqueH, sim, camera, controls, manager, bus, env, renderer, scene, pipe, editor, flyToObject, setSource };
+window.__eco = { tour, bloqueH, sim, camera, controls, manager, bus, env, renderer, scene, pipe, editor, flyToObject, setSource };
 frame();

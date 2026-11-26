@@ -56,6 +56,7 @@ export function createUI({ sim, bus, flyToObject, getDoc }) {
     const list = getDoc().tablero || [];
     const big = $('cards'), small = $('cards-sm');
     big.innerHTML = ''; small.innerHTML = '';
+    let lastGroup = '';
     cards = list.map((t) => {
       let el;
       if (t.tamano === 'chico') {
@@ -65,9 +66,16 @@ export function createUI({ sim, bus, flyToObject, getDoc }) {
         el.querySelector('span').textContent = t.titulo || '';
         small.appendChild(el);
       } else {
+        if (t.grupo && t.grupo !== lastGroup) {
+          const heading = document.createElement('div');
+          heading.className = 'group-title';
+          heading.textContent = t.grupo;
+          big.appendChild(heading);
+          lastGroup = t.grupo;
+        }
         el = document.createElement('button');
-        el.className = 'card';
-        el.innerHTML = `<span class="ico">${svg(t.icono)}</span><span><div class="name"></div><div class="sub"></div></span><span class="val"><span class="n">—</span><small></small></span>`;
+        el.className = `card${t.medidor ? ' has-meter' : ''}`;
+        el.innerHTML = `<span class="ico">${svg(t.icono)}</span><span><div class="name"></div><div class="sub"></div></span><span class="val"><span class="n">—</span><small></small></span>${t.medidor ? '<span class="meter"><i></i></span>' : ''}`;
         el.querySelector('.name').textContent = t.titulo || '';
         el.querySelector('.sub').textContent = t.subtitulo || '';
         el.querySelector('small').textContent = t.unidad || '';
@@ -116,7 +124,7 @@ export function createUI({ sim, bus, flyToObject, getDoc }) {
     ctx.beginPath(); ctx.arc(cx, 6, 5, 0, 7); ctx.fill();
     ctx.font = '10px system-ui, sans-serif';
     ctx.fillStyle = 'rgba(255,255,255,0.6)';
-    ctx.fillText('simulación: generación vs. consumo (24 h)', 8, 13);
+
   }
 
   const phase = (h) => (h < 5 ? 'Madrugada' : h < 6.5 ? 'Amanecer' : h < 12 ? 'Mañana' : h < 14 ? 'Mediodía' : h < 17.5 ? 'Tarde' : h < 19 ? 'Atardecer' : 'Noche');
@@ -130,14 +138,13 @@ export function createUI({ sim, bus, flyToObject, getDoc }) {
     $('phase').textContent = sim.live ? `${phase(sim.hour)} · hora real` : phase(sim.hour);
     $('l-wind').textContent = `${sim.wind.toFixed(1)} m/s`;
     $('l-cloud').textContent = `${Math.round(sim.cloud * 100)}%`;
-    $('source').textContent = status.text;
-    $('live').classList.toggle('off', !status.ok);
     for (const c of cards) {
       const v = bus.value(c.t.subject, c.t.campo);
       const fresh = v !== undefined && bus.age(c.t.subject) < 30;
       c.el.classList.toggle('stale', !fresh);
       const txt = v === undefined ? '—' : fmt(v, c.t.decimales ?? 0);
       c.n.textContent = c.t.tamano === 'chico' && v !== undefined ? `${txt} ${c.t.unidad || ''}` : txt;
+      if (c.t.medidor) c.el.querySelector('.meter i').style.width = `${Math.max(0, Math.min(100, Number(v) || 0))}%`;
     }
     if (!sim.live) drawChart();
   }
