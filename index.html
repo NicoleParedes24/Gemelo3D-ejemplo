@@ -23,6 +23,7 @@
   #brand .logo { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center;
     background: linear-gradient(145deg, #23a878, #28c9d6); box-shadow: 0 4px 16px rgba(40,201,214,.24); }
   #brand h1 { margin: 0; font-size: 16px; letter-spacing: 0.09em; font-weight: 750; }
+  #brand .mode { color: var(--dim); font-size: 11px; padding: 4px 7px; border: 1px solid var(--line); border-radius: 999px; white-space: nowrap; }
   .live.off { background: #ff6f4d; box-shadow: 0 0 8px #ff6f4d; }
   #cards-sm { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px; }
   #cards-sm:empty { display: none; }
@@ -48,17 +49,19 @@
 
 
   /* créditos */
-  #creditos { position: fixed; left: 18px; bottom: 76px; padding: 12px 16px 13px; font-size: 12px; z-index: 5; }
-  #creditos h5 { margin: 0 0 9px; font-size: 12.5px; font-weight: 650; letter-spacing: .02em; }
-  #creditos h5 em { font-style: normal; color: var(--batt); }
-  #creditos h5 span { color: var(--dim); font-weight: 500; }
-  #creditos .cols { display: grid; grid-template-columns: auto auto; column-gap: 26px; }
-  #creditos .cols div { display: flex; flex-direction: column; gap: 2px; }
-  #creditos b { font-weight: 600; color: var(--txt); }
+  #creditos { position: fixed; left: 18px; bottom: 18px; width: min(390px, calc(100vw - 36px)); padding: 10px 14px; font-size: 12px; z-index: 5;
+    background: rgba(16, 20, 24, .84); border-color: rgba(255,255,255,.13); box-shadow: 0 8px 28px rgba(0,0,0,.28); }
+  #creditos .credit-meta { display: flex; align-items: baseline; flex-wrap: wrap; gap: 7px; }
+  #creditos .credit-project { color: #f2f4f5; font-size: 13px; font-weight: 650; letter-spacing: .015em; }
+  #creditos .credit-separator { color: rgba(235,240,244,.35); }
+  #creditos .credit-school { color: rgba(235,240,244,.67); font-size: 11px; }
+  #creditos .credit-divider { height: 1px; margin: 8px 0 7px; background: rgba(255,255,255,.12); }
+  #creditos .cols { display: grid; grid-template-columns: 1fr 1fr; column-gap: 18px; }
+  #creditos .cols div { display: flex; flex-direction: column; gap: 4px; }
+  #creditos b { font-weight: 500; color: rgba(245,247,248,.9); }
   #creditos small { color: var(--dim); font-size: 11.5px; }
   @media (max-width: 900px) {
-    #creditos { left: 18px; bottom: 76px; max-width: min(380px, calc(100vw - 36px)); }
-    #creditos h5 { line-height: 1.45; }
+    #creditos { left: 18px; bottom: 18px; max-width: min(380px, calc(100vw - 36px)); }
   }
 
   /* energía del Bloque H */
@@ -122,7 +125,7 @@
   #panel.dashboard-ref .mini b { color: var(--txt); font-size: 14px; }
 
   /* dock */
-  #dock { position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); width: min(720px, calc(100vw - 36px));
+  #dock { position: fixed; right: 18px; bottom: 12px; width: min(720px, calc(100vw - 36px));
     padding: 6px 12px 14px; display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; border-radius: 12px; }
   .transport { display: flex; align-items: center; gap: 10px; }
   #play { width: 30px; height: 30px; border-radius: 50%; border: 0; cursor: pointer; background: #fff; color: #0c121a; display: grid; place-items: center; }
@@ -170,14 +173,13 @@
     #dock { grid-template-columns: 1fr; gap: 20px; } .knobs { grid-template-columns: 1fr 1fr; }
   }
   @media (min-width: 420px) and (max-width: 860px) {
-    #panel { width: 295px; }
+    #panel.dashboard-ref { width: 295px; }
     .card .sub { display: block; }
     .stats { display: grid; }
   }
   @media (max-width: 419px) {
-    #creditos { bottom: 76px; padding: 9px 11px; font-size: 11px; }
+    #creditos { bottom: 18px; padding: 9px 11px; font-size: 11px; }
     #creditos .cols { column-gap: 14px; }
-    #creditos h5 { font-size: 11px; }
   }
 </style>
 </head>
@@ -202,7 +204,8 @@
 
 <header id="brand" class="glass">
   <div class="logo"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Energía renovable"><path d="M19.5 4.5C12 4.2 6.3 6.8 5.2 12.3c-.6 3 1.5 5.2 4.3 4.8 5.3-.8 8.4-5.8 10-12.6Z"/><path d="m13.8 8.5-4.4 6h3.4l-1 4.8 4.8-6.8h-3.4l.6-4Z"/></svg></div>
-  <div><h1>ECOCAMPUS</h1></div>
+  <div class="brand-title"><h1>ECOCAMPUS</h1></div>
+  <span class="mode">Simulación</span>
 </header>
 
 <aside id="panel" class="glass dashboard-ref"><div id="cards"></div><div id="cards-sm"></div></aside>
@@ -214,16 +217,9 @@
   <button class="pill" id="t-bh">Ver interior Bloque H</button>
   <button class="pill" id="t-tour">▶ Recorrido Bloque H</button>
 </div>
-<div id="legend" class="glass">
-  <div style="--c:var(--solar)"><i></i>Solar</div>
-  <div style="--c:var(--wind)"><i></i>Eólica</div>
-  <div style="--c:var(--batt)"><i></i>Baterías</div>
-  <div style="--c:var(--load)"><i></i>Consumo edificios</div>
-  <div style="--c:var(--ev)"><i></i>Carga vehículos</div>
-  <div style="--c:var(--grid)"><i></i>Red</div>
-</div>
 <div id="creditos" class="glass">
-  <h5><em>EcoCampus 2026</em> <span>| Universidad Politécnica Salesiana</span></h5>
+  <div class="credit-meta"><span class="credit-project">EcoCampus 2026</span><span class="credit-separator">|</span><span class="credit-school">Universidad Politécnica Salesiana</span></div>
+  <div class="credit-divider"></div>
   <div class="cols">
     <div><b>Marcelo García</b><b>Daniela Galarza</b></div>
     <div><b>Rodrigo Tufiño</b><b>Nicole Paredes</b></div>
@@ -246,7 +242,7 @@
     <div class="ticks"><span>00</span><span>03</span><span>06</span><span>09</span><span>12</span><span>15</span><span>18</span><span>21</span><span>24</span></div>
   </div>
   <div class="knobs">
-    <div class="knob" style="--c:var(--wind)"><label>💨 <b id="l-wind">9 m/s</b></label><input class="r" id="wind" type="range" min="0" max="26" step="0.5" value="9" /></div>
+    <div class="knob" style="--c:var(--wind)"><label>Viento <b id="l-wind">9 m/s</b></label><input class="r" id="wind" type="range" min="0" max="26" step="0.5" value="9" /></div>
     <div class="knob" style="--c:#cfd8e3" hidden><label>Nubosidad <b id="l-cloud">0%</b></label><input class="r" id="cloud" type="range" min="0" max="1" step="0.01" value="0" /></div>
   </div>
 </footer>

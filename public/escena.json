@@ -9,8 +9,8 @@
   },
   "tablero": [
     {
-      "titulo": "Solar fotovoltaica",
-      "subtitulo": "250 kWp instalados",
+      "titulo": "Solar",
+      "grupo": "Generación",
       "subject": "campus.calc.totales",
       "campo": "solar_kw",
       "unidad": "kW",
@@ -21,31 +21,19 @@
     },
     {
       "titulo": "Eólica",
-      "subtitulo": "microeólica",
+      "grupo": "Generación",
       "subject": "campus.calc.totales",
       "campo": "eolica_kw",
       "unidad": "kW",
       "decimales": 0,
       "color": "#49d6ff",
-      "icono": "viento",
-      "objeto": "microeolica"
+      "icono": "viento"
     },
     {
-      "titulo": "Baterías",
-      "subtitulo": "600 kWh",
-      "subject": "campus.med.energia.baterias",
-      "campo": "soc",
-      "unidad": "%",
-      "decimales": 0,
-      "color": "#62ff9a",
-      "icono": "bateria",
-      "objeto": "baterias"
-    },
-    {
-      "titulo": "Consumo del campus",
-      "subtitulo": "edificios + vehículos",
-      "subject": "campus.calc.totales",
-      "campo": "demanda_kw",
+      "titulo": "Edificios",
+      "grupo": "Consumo",
+      "subject": "campus.med.campus.consumo",
+      "campo": "potencia_kw",
       "unidad": "kW",
       "decimales": 0,
       "color": "#ff6f4d",
@@ -53,8 +41,31 @@
       "objeto": "consumo"
     },
     {
+      "titulo": "Carga de vehículos",
+      "grupo": "Consumo",
+      "subject": "campus.med.parqueadero.cargadores",
+      "campo": "potencia_kw",
+      "unidad": "kW",
+      "decimales": 0,
+      "color": "#b98bff",
+      "icono": "auto",
+      "objeto": "consumo"
+    },
+    {
+      "titulo": "Baterías",
+      "grupo": "Almacenamiento y red",
+      "subject": "campus.med.energia.baterias",
+      "campo": "soc",
+      "unidad": "%",
+      "decimales": 0,
+      "color": "#62ff9a",
+      "icono": "bateria",
+      "objeto": "baterias",
+      "medidor": true
+    },
+    {
       "titulo": "Red eléctrica",
-      "subtitulo": "+ exporta · − importa",
+      "grupo": "Almacenamiento y red",
       "subject": "campus.med.red.medidor",
       "campo": "potencia_kw",
       "unidad": "kW",
@@ -64,22 +75,22 @@
       "objeto": "transformador"
     },
     {
-      "titulo": "Energía limpia",
+      "titulo": "Energía total importada",
       "subject": "campus.calc.totales",
-      "campo": "renovable_pct",
-      "unidad": "%",
+      "campo": "kwh_importada",
+      "unidad": "kWh",
       "decimales": 0,
-      "color": "#62ff9a",
+      "color": "#ff8b6a",
       "icono": "hoja",
       "tamano": "chico"
     },
     {
-      "titulo": "CO₂ evitado",
+      "titulo": "Energía total exportada",
       "subject": "campus.calc.totales",
-      "campo": "co2_kg",
-      "unidad": "kg",
+      "campo": "kwh_exportada",
+      "unidad": "kWh",
       "decimales": 0,
-      "color": "#9fe3ff",
+      "color": "#55e68a",
       "icono": "hoja",
       "tamano": "chico"
     }
@@ -148,36 +159,6 @@
           0,
           4.6,
           9.4
-        ]
-      }
-    },
-    {
-      "id": "microeolica",
-      "tipo": "microeolica",
-      "nombre": "Microeólica",
-      "pos": [
-        -6,
-        22.36,
-        -6
-      ],
-      "rot": 0,
-      "params": {
-        "cantidad": 3,
-        "separacion": 6.5
-      },
-      "dato": {
-        "subject": "campus.med.bloqueA.microeolica",
-        "campo": "potencia_kw",
-        "unidad": "kW",
-        "decimales": 1,
-        "max": 9
-      },
-      "etiqueta": {
-        "visible": true,
-        "offset": [
-          6.5,
-          7.1,
-          0
         ]
       }
     },
@@ -337,40 +318,6 @@
         "subject": "campus.calc.totales",
         "campo": "techo_kw",
         "max": 184
-      }
-    },
-    {
-      "id": "c-microeolica",
-      "desde": "microeolica",
-      "hacia": null,
-      "color": "#49d6ff",
-      "radio": 0.14,
-      "puntos": [
-        [
-          -12.5,
-          22.6,
-          -4.4
-        ],
-        [
-          3.4,
-          22.6,
-          -4.4
-        ],
-        [
-          3.4,
-          22.6,
-          -9.2
-        ],
-        [
-          3.4,
-          17.5,
-          -9.2
-        ]
-      ],
-      "dato": {
-        "subject": "campus.med.bloqueA.microeolica",
-        "campo": "potencia_kw",
-        "max": 9
       }
     },
     {

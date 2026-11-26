@@ -3,7 +3,7 @@ import { smooth, clamp } from '../util.js';
 // Simulador: publica en el bus los mismos subjects que publicaría el motor multiprotocolo real.
 // Sirve para probar la escena sin dispositivos. Con NATS conectado no se usa.
 
-export const CAP = { roof: 120, wing: 55, car: 75, windEach: 100, vawt: 9, batt: 600, battP: 150 };
+export const CAP = { roof: 120, wing: 55, car: 75, windEach: 100, batt: 600, battP: 150 };
 
 export function model(h, wind, cloud) {
   const e = Math.sin((Math.PI * (h - 6)) / 12);
@@ -13,12 +13,12 @@ export function model(h, wind, cloud) {
   const vf = curve(wind * 0.8, 2.5, 11, 30);
   const o = {
     roof: CAP.roof * irr, wing: CAP.wing * irr, car: CAP.car * irr,
-    windEach: CAP.windEach * wf, vawt: CAP.vawt * vf,
+    windEach: CAP.windEach * wf,
     load: 55 + 150 * smooth(6, 9, h) * (1 - smooth(18, 22, h)) + 28 * smooth(17.5, 19, h) * (1 - smooth(21, 23, h)),
     ev: 8 + 50 * smooth(7, 9, h) * (1 - smooth(16, 19, h)),
   };
   o.solar = o.roof + o.wing + o.car;
-  o.wind = o.windEach * 3 + o.vawt;
+  o.wind = o.windEach * 3;
   o.gen = o.solar + o.wind;
   o.demand = o.load + o.ev;
   return o;
@@ -26,7 +26,7 @@ export function model(h, wind, cloud) {
 
 export const SIM_SUBJECTS = [
   'campus.med.bloqueA.solar', 'campus.med.bloqueB.solar', 'campus.med.parqueadero.solar',
-  'campus.med.eolica.ag1', 'campus.med.eolica.ag2', 'campus.med.eolica.ag3', 'campus.med.bloqueA.microeolica',
+  'campus.med.eolica.ag1', 'campus.med.eolica.ag2', 'campus.med.eolica.ag3',
   'campus.med.energia.baterias', 'campus.med.campus.consumo', 'campus.med.parqueadero.cargadores',
   'campus.med.red.medidor', 'campus.calc.totales',
 ];
@@ -36,6 +36,8 @@ export class Simulator {
     this.bus = bus;
     this.soc = 0.58;
     this.kwhRen = 0;
+    this.kwhImportada = 0;
+    this.kwhExportada = 0;
     this.acc = 1;
   }
   stop() {}
@@ -55,6 +57,8 @@ export class Simulator {
     this.soc = clamp(this.soc + (batt * dtHours) / CAP.batt, 0.1, 1);
     const grid = net - batt; // + = exporta
     this.kwhRen += Math.min(m.gen, m.demand + Math.max(0, batt)) * dtHours;
+    this.kwhImportada += Math.max(0, -grid) * dtHours;
+    this.kwhExportada += Math.max(0, grid) * dtHours;
     this.last = { m, batt, grid };
 
     this.acc += dt;
@@ -67,7 +71,6 @@ export class Simulator {
     p('campus.med.bloqueB.solar', { potencia_kw: r(m.wing) });
     p('campus.med.parqueadero.solar', { potencia_kw: r(m.car) });
     [1, 2, 3].forEach((i) => p(`campus.med.eolica.ag${i}`, { potencia_kw: r(m.windEach), viento_ms: r(gust) }));
-    p('campus.med.bloqueA.microeolica', { potencia_kw: r(m.vawt, 2) });
     p('campus.med.energia.baterias', { soc: r(this.soc * 100), potencia_kw: r(batt) });
     p('campus.med.campus.consumo', { potencia_kw: r(m.load) });
     p('campus.med.parqueadero.cargadores', { potencia_kw: r(m.ev) });
@@ -76,9 +79,10 @@ export class Simulator {
     const ren = Math.min(m.gen, m.demand);
     const clean = (ren + Math.max(0, -batt)) / Math.max(1, m.demand);
     p('campus.calc.totales', {
-      solar_kw: r(m.solar), eolica_kw: r(m.wind), techo_kw: r(m.roof + m.wing + m.vawt),
+      solar_kw: r(m.solar), eolica_kw: r(m.wind), techo_kw: r(m.roof + m.wing),
       demanda_kw: r(m.demand), renovable_pct: r(Math.min(100, clean * 100)),
-      kwh_renovable: r(this.kwhRen, 0), co2_kg: r(this.kwhRen * 0.35, 0),
+      kwh_renovable: r(this.kwhRen, 0),
+      kwh_importada: r(this.kwhImportada, 0), kwh_exportada: r(this.kwhExportada, 0),
     });
   }
 }

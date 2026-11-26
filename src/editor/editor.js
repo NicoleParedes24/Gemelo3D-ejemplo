@@ -20,7 +20,7 @@ const h = (tag, attrs = {}, ...kids) => {
 };
 
 // unidad probable a partir del nombre del campo
-const guessUnit = (c = '') => /soc|pct|porcentaje|humedad/i.test(c) ? '%' : /kwh$/i.test(c) ? 'kWh' : /_kw$|^kw$/i.test(c) ? 'kW' : /_w$/i.test(c) ? 'W' : /temp/i.test(c) ? '°C' : /_v$|volt/i.test(c) ? 'V' : /_a$|corriente/i.test(c) ? 'A' : /_ms$|viento/i.test(c) ? 'm/s' : /co2/i.test(c) ? 'kg' : '';
+const guessUnit = (c = '') => /soc|pct|porcentaje|humedad/i.test(c) ? '%' : /kwh$/i.test(c) ? 'kWh' : /_kw$|^kw$/i.test(c) ? 'kW' : /_w$/i.test(c) ? 'W' : /temp/i.test(c) ? '°C' : /_v$|volt/i.test(c) ? 'V' : /_a$|corriente/i.test(c) ? 'A' : /_ms$|viento/i.test(c) ? 'm/s' : '';
 
 const HINTS = {
   idle: 'Clic en un objeto, etiqueta o cable para seleccionarlo · <kbd>W</kbd> mover · <kbd>E</kbd> rotar · <kbd>Supr</kbd> borrar · <kbd>Ctrl+Z</kbd> deshacer',

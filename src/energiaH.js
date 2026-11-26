@@ -85,7 +85,7 @@ const ETIQUETAS = [
   { t: 'Solar · Terraza H', v: '18 kW', c: '#ffc531', p: [9.5, 8.2, 15.5], vista: { p: [-140, 16, 45], t: [-128, 4.6, 26], techo: true } },
   { t: 'Microeólica · Entrada', v: '1,2 kW', c: '#49d6ff', p: [-16.4, 15.2, -13.4], vista: { p: [-80, 12, -25], t: [-100.5, 11, -1.5], techo: true } },
   { t: 'Microrred · Baterías', v: '72 %', v2: 'cargando', c: '#62ff9a', p: [27, 13.5, -5], vista: { p: [-103, 14, 44.5], t: [-111, 5, 38], techo: false } },
-  { t: 'Alta tensión', v: '3,2 kW', c: '#ff6f4d', p: [26.5, 12.5, 4.5], vista: { p: [-119.5, 14, 32], t: [-119.5, 1.4, 41.5], techo: false } },
+  { t: 'Alta tensión', v: '3,2 kW', c: '#ff6f4d', p: [26.5, 12.5, 4.5], vista: { p: [-119.5, 2.1, 35.5], t: [-119.5, 1.7, 41.5], techo: false } },
   { t: 'Lab. de tableros', v: '5,4 kW', c: '#ff6f4d', p: [-5, 11.5, -23], vista: { p: [-104, 14, 3], t: [-93, 0.5, 10], techo: false } },
   { t: 'Patio de prácticas', v: '4,5 kW', c: '#dfe8ff', p: [-28, 12, 22], vista: { p: [-152, 6, -27], t: [-137, 7.5, -12], techo: true } },
   { t: 'Carga EV · Bloque H', v: '2 × 7 kW', c: '#b98bff', p: [-30, 4.5, -33.5], vista: { p: [-70, 7, -9], t: [-81.6, 0.8, -15], techo: true } },
